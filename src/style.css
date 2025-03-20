@@ -1,3 +1,9 @@
 @import "tailwindcss";
 
+#needle {
+  z-index: 30 !important;
+}
 
+#record {
+  z-index: 20 !important;
+}
