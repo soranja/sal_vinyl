@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+@layer utilities {
+  .bg-deep-space {
+    background: radial-gradient(circle, rgba(0, 24, 144, 1) 0%, rgba(4, 0, 42, 1) 100%);
+  }
+}

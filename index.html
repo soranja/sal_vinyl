@@ -1,13 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vynil_icon.svg" />
+    <link rel="stylesheet" href="./style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Soranja: vynil-player</title>
+    <title>Soranja: ВИНИЛ</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div
+      id="app"
+      class="w-full h-screen flex flex-col justify-center items-center bg-deep-space overflow-hidden gap-y-4"
+    >
+      <div id="player-wrapper" class="max-h-[70vh] flex flex-col justify-center items-center">
+        <div id="player-container" class="relative w-full h-full flex justify-center items-center"></div>
+      </div>
+      <br />
+      <button id="play-button" class="px-8 py-2 bg-[#222] text-white rounded-lg cursor-pointer">Play</button>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
