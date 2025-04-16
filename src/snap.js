@@ -1,80 +1,159 @@
 import gsap from 'gsap';
 import { Draggable } from 'gsap/Draggable';
 import { getCenterOfElement, getCenterDistance } from './trackers.js';
-import { logRecordState } from './trackers.js';
+import {
+  setSnappedRecord,
+  clearSnappedRecord,
+  setRecordReady,
+  setCurrentAudio,
+  setCurrentRecord,
+  setRecordSpin,
+  getSnappedRecord,
+  getCurrentDraggedRecord,
+  getCurrentAudio,
+  getRecordSpin,
+} from './constants.js';
 
-let snapped = false;
+gsap.registerPlugin(Draggable);
 
-export function isRecordSnapped() {
-  return snapped;
+// Helpers
+function getSnapAreas(recordCenter, playerCenter) {
+  const totalDistance = getCenterDistance(recordCenter, playerCenter);
+  const halfway = totalDistance / 2;
+  return { initArea: halfway, readyArea: halfway };
 }
 
-export function initProximitySnap(recordEl, playerEl) {
-  const indicator = document.createElement('div');
-  indicator.className = `
-    absolute 
-    bottom-2 left-1/2 -translate-x-1/2 
-    z-50 px-3 py-1 rounded-lg text-white font-bold 
-    text-sm pointer-events-none transition-all duration-300
-  `;
-  document.body.appendChild(indicator);
+function snapToTarget(record, targetCenter, scaleUp = false, resetZ = false, playerSnap = false) {
+  const recordCenter = getCenterOfElement(record);
+  const offsetX = targetCenter.x - recordCenter.x;
+  const offsetY = targetCenter.y - recordCenter.y;
+  const currentX = gsap.getProperty(record, 'x');
+  const currentY = gsap.getProperty(record, 'y');
+
+  gsap.to(record, {
+    x: currentX + offsetX,
+    y: currentY + offsetY,
+    scale: scaleUp ? 4 : 1,
+    duration: 0.8,
+    ease: 'power3.out',
+    overwrite: 'auto',
+    onStart: () => {
+      if (playerSnap) {
+        record.style.zIndex = 30;
+        const needle = document.getElementById('needle');
+        if (needle) needle.style.zIndex = 40;
+      }
+      if (resetZ && record.dataset.initZ) {
+        record.style.zIndex = record.dataset.initZ;
+      }
+    },
+  });
+}
+
+function unsnapRecord(record, initCenter) {
+  snapToTarget(record, initCenter, false, true, false);
+
+  const audio = getCurrentAudio();
+  const barFill = document.getElementById('progress-bar-fill');
+  const pointer = document.getElementById('progress-bar-pointer');
+  const vinylWrapper = record.querySelector('#vinyl-wrapper');
+
+  gsap.to(vinylWrapper, { rotation: 0, duration: 0.4, ease: 'power2.out' });
+  gsap.to(record, { rotation: 0, duration: 0.4, ease: 'power2.out' });
+
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+
+  if (barFill && pointer) {
+    gsap.set(barFill, { width: 0 });
+    gsap.set(pointer, { x: 0 });
+  }
+
+  getRecordSpin().pause().kill();
+  setRecordSpin(null);
+  clearSnappedRecord();
+  setRecordReady(false);
+}
+
+// Main Proximity Snap
+export function initProximitySnap(record, player, audio) {
+  const initCenter = getCenterOfElement(record);
+  const playerCenter = getCenterOfElement(player);
+  record.dataset.initCenter = JSON.stringify(initCenter);
 
   function updateProximity() {
-    const recordWrapper = document.getElementById('record-wrapper');
-    const needle = document.getElementById('needle');
-    const recordCenter = getCenterOfElement(recordEl);
-    const playerCenter = getCenterOfElement(playerEl);
-    const distance = getCenterDistance(recordCenter, playerCenter);
+    const recordCenter = getCenterOfElement(record);
+    const distanceToPlayer = getCenterDistance(recordCenter, playerCenter);
+    const distanceToInit = getCenterDistance(recordCenter, initCenter);
 
-    const nearThreshold = window.innerWidth * 0.07;
-    const matchThreshold = 5;
+    const { initArea, readyArea } = getSnapAreas(initCenter, playerCenter);
 
-    if (distance < matchThreshold) {
-      //   indicator.textContent = 'MATCH';
-      //   indicator.style.backgroundColor = '#22c55e';
-      recordWrapper.style.zIndex = 20;
-      needle.style.zIndex = 30;
-      snapped = true;
-    } else if (distance < nearThreshold) {
-      //   indicator.textContent = 'CLOSE';
-      //   indicator.style.backgroundColor = '#eab308';
+    const draggedRecord = getCurrentDraggedRecord();
+    const snappedRecord = getSnappedRecord();
+    const isDragged = draggedRecord === record;
+    // const isSnapped = snappedRecord === record;
 
-      if (!snapped) {
-        logRecordState('Before Snap');
-        const offsetX = playerCenter.x - recordCenter.x;
-        const offsetY = playerCenter.y - recordCenter.y;
-        const currentX = gsap.getProperty(recordEl, 'x');
-        const currentY = gsap.getProperty(recordEl, 'y');
+    if (isDragged) {
+      record.style.zIndex = 30;
+      const needle = document.getElementById('needle');
+      if (needle) needle.style.zIndex = 20;
 
-        gsap.to(recordEl, {
-          x: currentX + offsetX,
-          y: currentY + offsetY,
-          duration: 0.6,
-          ease: 'power3.out',
-          overwrite: 'auto',
-          onUpdate: () => {
-            const draggable = Draggable.get(recordEl);
-            if (draggable) draggable.update();
-          },
-          onComplete: () => {
-            recordWrapper.style.zIndex = 20;
-            needle.style.zIndex = 30;
-            logRecordState('After Snap');
-          },
-        });
-
-        snapped = true;
+      if (distanceToPlayer < readyArea) {
+        if (snappedRecord && snappedRecord !== record) {
+          const init = JSON.parse(snappedRecord.dataset.initCenter);
+          snapToTarget(snappedRecord, init, false, true, false);
+          clearSnappedRecord();
+          setRecordReady(false);
+        }
       }
     } else {
-      //   indicator.textContent = 'FAR';
-      //   indicator.style.backgroundColor = '#ef4444';
-      recordWrapper.style.zIndex = 30;
-      needle.style.zIndex = 20;
-      snapped = false;
+      if (snappedRecord === record) {
+        if (distanceToPlayer > readyArea) {
+          unsnapRecord(record, initCenter);
+        } else {
+          snapToTarget(record, playerCenter, true, false, true);
+        }
+      } else {
+        if (distanceToPlayer < readyArea) {
+          if (snappedRecord && snappedRecord !== record) {
+            const prevInit = JSON.parse(snappedRecord.dataset.initCenter);
+            snapToTarget(snappedRecord, prevInit, false, true, false);
+          }
+
+          // Overwrite snapped state no matter what
+          setSnappedRecord(record);
+          setCurrentAudio(audio);
+          setCurrentRecord(record);
+          setRecordReady(true);
+          snapToTarget(record, playerCenter, true, false, true);
+        } else if (distanceToInit < initArea) {
+          snapToTarget(record, initCenter, false, true, false);
+        }
+      }
     }
 
     requestAnimationFrame(updateProximity);
   }
 
   updateProximity();
+
+  Draggable.get(record)?.addEventListener('dragend', () => {
+    const draggedRecord = getCurrentDraggedRecord();
+    const snappedRecord = getSnappedRecord();
+    if (draggedRecord) return; // another record still being dragged
+    if (snappedRecord && snappedRecord !== record) return; // this record is not the snapped one
+
+    const recordCenter = getCenterOfElement(record);
+    const distanceToPlayer = getCenterDistance(recordCenter, playerCenter);
+    const distanceToInit = getCenterDistance(recordCenter, initCenter);
+
+    const { initArea, readyArea } = getSnapAreas(initCenter, playerCenter);
+
+    if (distanceToPlayer > readyArea && distanceToInit > initArea) {
+      const init = JSON.parse(record.dataset.initCenter);
+      snapToTarget(record, init, false, true, false);
+    }
+  });
 }

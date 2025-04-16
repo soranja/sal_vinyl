@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vynil_icon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vinyl_icon.svg" />
     <link rel="stylesheet" href="./style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Soranja: ВИНИЛ</title>
@@ -10,14 +10,61 @@
   <body>
     <div
       id="app"
-      class="w-full h-screen flex flex-col justify-center items-center bg-deep-space overflow-hidden gap-y-4"
+      class="relative flex w-full h-screen items-center justify-between bg-deep-space text-white overflow-hidden"
     >
-      <div id="player-wrapper" class="max-h-[70vh] flex flex-col justify-center items-center">
-        <div id="player-container" class="relative w-full h-full flex justify-center items-center"></div>
+      <!-- LEFT: Record List -->
+      <div
+        id="record-list"
+        class="relative w-[18vh] flex flex-col items-center mt-8 ml-4 border-2 border-orange-500"
+        style="height: calc(100vh - 2rem)"
+      >
+        <!-- Records are here (via JS) -->
       </div>
-      <br />
-      <button id="play-button" class="px-8 py-2 bg-[#222] text-white rounded-lg cursor-pointer">Play</button>
+
+      <!-- RIGHT: Player -->
+      <div class="flex flex-col justify-center items-center self-start mt-[10vh] mr-[10vh] gap-y-6">
+        <div id="player-wrapper" class="flex flex-col justify-center items-center h-full">
+          <div id="player-container" class="relative flex flex-row justify-center items-center h-full gap-4">
+            <img
+              id="player"
+              src="/player/player.png"
+              alt="player"
+              class="relative w-auto h-[60vh] max-w-full select-none object-contain z-0 drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
+            />
+
+            <img
+              id="needle"
+              src="/player/needle.png"
+              alt="needle"
+              class="relative w-auto h-[60vh] max-w-full select-none object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]"
+            />
+          </div>
+        </div>
+
+        <!-- UI: Play Button + Progress Bar -->
+        <div id="player-ui" class="flex justify-center items-center gap-x-4 self-end flex-shrink-0">
+          <button id="play-button" class="p-3 bg-[#222] rounded-lg cursor-pointer flex items-center justify-center">
+            <img id="play-icon" src="/ui/play.svg" alt="play" class="w-6 h-6" />
+          </button>
+          <div
+            id="progress-bar-wrapper"
+            class="w-[250px] h-3 bg-neutral-800 relative overflow-hidden shadow-inners mb-6"
+          >
+            <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-green-500 w-0"></div>
+            <div
+              id="progress-bar-pointer"
+              class="absolute -top-3 w-[4px] h-8 bg-white z-20 transition-opacity duration-300"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Record Message -->
+        <div id="record-message" class="text-white text-sm text-center opacity-0 transition-opacity duration-500">
+          Put the record on the player!
+        </div>
+      </div>
     </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

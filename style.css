@@ -5,3 +5,7 @@
     background: radial-gradient(circle, rgba(0, 24, 144, 1) 0%, rgba(4, 0, 42, 1) 100%);
   }
 }
+
+#play-icon {
+  filter: brightness(0) invert(1);
+}

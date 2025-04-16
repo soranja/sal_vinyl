@@ -1,4 +1,5 @@
 import gsap from 'gsap';
+import { getSnappedRecord, getCurrentDraggedRecord } from './constants';
 
 // Track Center Marker
 export function createCenterMarker(label = '', color = 'bg-yellow-500') {
@@ -42,7 +43,6 @@ export function trackAndUpdateCenter(el, marker) {
 }
 
 // Track Element Position
-
 export function getElementPosition(el) {
   const rect = el.getBoundingClientRect();
   return {
@@ -59,7 +59,7 @@ export function getElementPosition(el) {
 
 export function initElementPositionUI(elements = []) {
   const debugContainer = document.createElement('div');
-  debugContainer.className = 'absolute top-2 left-2 space-y-1 z-50 text-xs';
+  debugContainer.className = 'absolute bottom-2 right-2 space-y-1 z-50 text-xs flex flex-col';
 
   debugContainer.innerHTML = elements
     .map(({ id }) => `<div id="${id}-pos" class="bg-black/70 text-white px-2 py-1 rounded">${id}: --</div>`)
@@ -83,16 +83,63 @@ export function initElementPositionUI(elements = []) {
 }
 
 // Loggers
-export function logRecordState(tag = '') {
-  const record = document.getElementById('record');
-  const rect = record.getBoundingClientRect();
-  const x = gsap.getProperty(record, 'x');
-  const y = gsap.getProperty(record, 'y');
-  const rotation = gsap.getProperty(record, 'rotation');
-  const transform = record.style.transform;
+export function logStates() {
+  const dragged = getCurrentDraggedRecord();
+  const snapped = getSnappedRecord();
+  const allRecords = document.querySelectorAll('#record-list > div');
+  const needle = document.getElementById('needle');
 
-  console.log(`🪩 [${tag}]`);
-  console.log(`  x: ${x}, y: ${y}, rotation: ${rotation}`);
-  console.log(`  top: ${rect.top}, left: ${rect.left}`);
-  console.log(`  transform: ${transform}`);
+  const initSnapped = [];
+  const playerSnapped = [];
+
+  allRecords.forEach((record) => {
+    const center = record.getBoundingClientRect();
+    const playerCenter = document.getElementById('player').getBoundingClientRect();
+    const distToPlayer = Math.hypot(center.x - playerCenter.x, center.y - playerCenter.y);
+
+    if (distToPlayer < 150) {
+      playerSnapped.push(record);
+    } else {
+      initSnapped.push(record);
+    }
+  });
+
+  console.log({
+    currentDraggedRecord: dragged
+      ? {
+          name: dragged.dataset.name,
+          index: dragged.dataset.index,
+          position: {
+            x: gsap.getProperty(dragged, 'x'),
+            y: gsap.getProperty(dragged, 'y'),
+          },
+        }
+      : null,
+
+    initSnappedRecords: initSnapped.map((r) => ({
+      name: r.dataset.name,
+      index: r.dataset.index,
+    })),
+
+    playerSnappedRecords: playerSnapped.map((r) => ({
+      name: r.dataset.name,
+      index: r.dataset.index,
+    })),
+
+    allInitialZIndexes: Array.from(allRecords).map((r) => ({
+      name: r.dataset.name,
+      index: r.dataset.index,
+      zIndex: r.style.zIndex,
+    })),
+
+    snappedRecordZIndex: snapped
+      ? {
+          name: snapped.dataset.name,
+          index: snapped.dataset.index,
+          zIndex: snapped.style.zIndex,
+        }
+      : null,
+
+    needleZIndex: needle ? window.getComputedStyle(needle).zIndex : null,
+  });
 }
