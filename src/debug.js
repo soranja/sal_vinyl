@@ -1,80 +1,59 @@
 import gsap from 'gsap';
 import { getSnappedRecord, getCurrentDraggedRecord, readyPos, records } from './constants';
 
-// Track Center Marker
-export function createCenterMarker(label = '', color = 'bg-yellow-500') {
-  const marker = document.createElement('div');
-  marker.className = `
-    absolute 
-    z-50 w-[15px] h-[15px] 
-    ${color} rounded-full border-1 border-white 
-    flex items-center justify-center 
-    text-[10px] text-white font-bold
-    pointer-events-none opacity-60
-    translate-x-[-50%] translate-y-[-50%]
+function createDebugPanel() {
+  const debugPanel = document.createElement('div');
+  debugPanel.className = `
+    fixed top-2 right-2 z-[1500] bg-black/80 text-white p-3 rounded space-y-2 text-sm debug-toggleable
   `;
-  marker.textContent = label;
-  document.body.appendChild(marker);
-  return marker;
+  debugPanel.innerHTML = `
+    <label><input type="checkbox" id="toggle-areas" checked />Areas</label><br/>
+    <label><input type="checkbox" id="toggle-snap-zones" checked />Snap Zones</label><br/>
+    <label><input type="checkbox" id="toggle-dots" checked />Position Dots</label><br/>
+    <label><input type="checkbox" id="toggle-state-panel" checked />State Panel</label>
+  `;
+  document.body.appendChild(debugPanel);
 }
 
-// -----------------------------------------------------------------------------
-//                             Position helpers
-// -----------------------------------------------------------------------------
-export function getCenterOfElement(el) {
-  const rect = el.getBoundingClientRect();
-  return {
-    x: rect.left + rect.width / 2,
-    y: rect.top + rect.height / 2,
+function applyDebugVisibility() {
+  document.getElementById('toggle-areas').onchange = (e) => {
+    const areas = ['init-area', 'ready-area'];
+    areas.forEach((area) => {
+      const el = document.getElementById(area);
+      el.style.outline = e.target.checked ? '2px solid rgba(0, 123, 255, 0.6)' : 'none';
+    });
+  };
+
+  document.getElementById('toggle-snap-zones').onchange = (e) => {
+    const snapZones = ['init-area-threshold', 'ready-area-threshold'];
+    snapZones.forEach((id) => {
+      const el = document.getElementById(id);
+      el.style.outline = e.target.checked ? '2px dashed rgba(0, 255, 0, 0.5)' : 'none';
+    });
+  };
+
+  document.getElementById('toggle-dots').onchange = (e) => {
+    document.querySelectorAll('.debug-dot').forEach((el) => (el.style.display = e.target.checked ? 'block' : 'none'));
+  };
+
+  document.getElementById('toggle-state-panel').onchange = (e) => {
+    const statePanel = document.getElementById('state-panel');
+    if (statePanel) statePanel.style.display = e.target.checked ? 'block' : 'none';
   };
 }
 
-export function getCenterDistance(a, b) {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return Math.sqrt(dx * dx + dy * dy);
-}
+function initStatePanel(elements = []) {
+  const statePanel = document.createElement('div');
+  statePanel.id = 'state-panel';
+  statePanel.className = 'absolute bottom-2 right-2 space-y-1 z-50 text-xs flex flex-col';
+  statePanel.classList.add('debug-toggleable');
+  statePanel.style.display = 'none';
 
-export function trackAndUpdateCenter(el, marker) {
-  function updateMarkerPosition() {
-    const { x, y } = getCenterOfElement(el);
-    marker.style.left = `${x}px`;
-    marker.style.top = `${y}px`;
-    requestAnimationFrame(updateMarkerPosition);
-  }
-  updateMarkerPosition();
-}
-
-export function getElementPosition(el) {
-  const rect = el.getBoundingClientRect();
-  return {
-    topLeft: {
-      x: rect.left,
-      y: rect.top,
-    },
-    center: {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
-    },
-  };
-}
-
-// -----------------------------------------------------------------------------
-//                         Debug overlay (coords + flags)
-// -----------------------------------------------------------------------------
-/**
- * Builds a floating debug UI showing each tracked element's top‑left coords
- * and, for records, a list of their TRUE state flags on the same line.
- */
-export function initElementPositionUI(elements = []) {
-  const debugContainer = document.createElement('div');
-  debugContainer.className = 'absolute bottom-2 right-2 space-y-1 z-50 text-xs flex flex-col debug-container';
-
-  debugContainer.innerHTML = elements
+  statePanel.innerHTML = elements
     .map(({ id }) => `<div id="${id}-pos" class="bg-black/70 text-white px-2 py-1 rounded">${id}: --</div>`)
     .join('');
 
-  document.body.appendChild(debugContainer);
+  document.body.appendChild(statePanel);
 
   // Full list of boolean flags we want to watch in the UI
   const flagList = [
@@ -113,10 +92,7 @@ export function initElementPositionUI(elements = []) {
   updateUI();
 }
 
-// -----------------------------------------------------------------------------
-//                       Init & ready position visual helpers
-// -----------------------------------------------------------------------------
-export function drawInitCenterDot({ x, y }, label = '', color = 'bg-white') {
+function drawInitCenterDot({ x, y }, label = '', color = '') {
   const marker = document.createElement('div');
   marker.className = `
     fixed w-[10px] h-[10px] ${color} rounded-full z-[2000] 
@@ -128,19 +104,26 @@ export function drawInitCenterDot({ x, y }, label = '', color = 'bg-white') {
   marker.style.left = `${x}px`;
   marker.style.top = `${y}px`;
   marker.textContent = label;
+  marker.classList.add('debug-dot', 'debug-toggleable');
   document.body.appendChild(marker);
   return marker;
 }
 
+export function getCenterOfElement(el) {
+  const rect = el.getBoundingClientRect();
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+}
+
 export function updateStaticDots() {
-  // ready centre (player)
   const player = document.getElementById('player');
   const readyCenter = getCenterOfElement(player);
   readyPos.x = readyCenter.x;
   readyPos.y = readyCenter.y;
   drawInitCenterDot(readyCenter, 'R', 'bg-red-500');
 
-  // every record wrapper in the list
   const allRecords = document.querySelectorAll('#record-list > div');
 
   gsap.delayedCall(0, () => {
@@ -148,24 +131,22 @@ export function updateStaticDots() {
       const center = getCenterOfElement(rec);
       const idx = +rec.dataset.index - 1;
 
-      // persist init position in constants
       records[idx].initPos = center;
       rec.dataset.initCenter = JSON.stringify(center);
 
       drawInitCenterDot(center, rec.dataset.index, 'bg-blue-500');
     });
 
-    // kick‑off debug overlay (coords + flags)
-    initElementPositionUI([
+    initStatePanel([
       { id: 'R', el: player },
       ...Array.from(allRecords).map((el, i) => ({ id: `${i + 1}`, el, recordData: records[i] })),
     ]);
   });
+
+  createDebugPanel();
+  applyDebugVisibility();
 }
 
-// -----------------------------------------------------------------------------
-//                              Console logger
-// -----------------------------------------------------------------------------
 export function logStates() {
   const dragged = getCurrentDraggedRecord();
   const snapped = getSnappedRecord();

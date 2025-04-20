@@ -1,5 +1,5 @@
 import gsap from 'gsap';
-import { getCenterOfElement } from './trackers';
+import { getCenterOfElement } from './debug';
 import {
   setSnappedRecord,
   clearSnappedRecord,
