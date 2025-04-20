@@ -1,6 +1,5 @@
 import gsap from 'gsap';
-import { Draggable } from 'gsap/Draggable';
-import { getCenterOfElement, getCenterDistance } from './trackers.js';
+import { getCenterOfElement } from './trackers';
 import {
   setSnappedRecord,
   clearSnappedRecord,
@@ -12,148 +11,164 @@ import {
   getCurrentDraggedRecord,
   getCurrentAudio,
   getRecordSpin,
-} from './constants.js';
+  readyPos,
+  records,
+} from './constants';
 
-gsap.registerPlugin(Draggable);
+gsap.registerPlugin();
 
-// Helpers
-function getSnapAreas(recordCenter, playerCenter) {
-  const totalDistance = getCenterDistance(recordCenter, playerCenter);
-  const halfway = totalDistance / 2;
-  return { initArea: halfway, readyArea: halfway };
-}
-
-function snapToTarget(record, targetCenter, scaleUp = false, resetZ = false, playerSnap = false) {
-  const recordCenter = getCenterOfElement(record);
-  const offsetX = targetCenter.x - recordCenter.x;
-  const offsetY = targetCenter.y - recordCenter.y;
-  const currentX = gsap.getProperty(record, 'x');
-  const currentY = gsap.getProperty(record, 'y');
+function snapTween(record, target, opts = {}) {
+  if (record.dataset.frozen === 'true') return;
+  const here = getCenterOfElement(record);
+  const curX = gsap.getProperty(record, 'x');
+  const curY = gsap.getProperty(record, 'y');
 
   gsap.to(record, {
-    x: currentX + offsetX,
-    y: currentY + offsetY,
-    scale: scaleUp ? 4 : 1,
+    x: curX + (target.x - here.x),
+    y: curY + (target.y - here.y),
+    scale: opts.scaleUp ? 3.5 : 1,
     duration: 0.8,
     ease: 'power3.out',
     overwrite: 'auto',
-    onStart: () => {
-      if (playerSnap) {
+    onStart() {
+      if (opts.playerSnap) {
         record.style.zIndex = 30;
-        const needle = document.getElementById('needle');
-        if (needle) needle.style.zIndex = 40;
+        document.getElementById('needle')?.style.setProperty('z-index', 40);
       }
-      if (resetZ && record.dataset.initZ) {
+      if (opts.resetZ && record.dataset.initZ) {
         record.style.zIndex = record.dataset.initZ;
       }
     },
   });
 }
 
-function unsnapRecord(record, initCenter) {
-  snapToTarget(record, initCenter, false, true, false);
+function unsnapToInit(record, meta) {
+  // identical to before…
+  snapTween(record, meta.initPos, { resetZ: true });
+  meta.readySnapped = false;
+  meta.initSnapped = true;
+  meta.readyDragged = false;
 
   const audio = getCurrentAudio();
-  const barFill = document.getElementById('progress-bar-fill');
-  const pointer = document.getElementById('progress-bar-pointer');
-  const vinylWrapper = record.querySelector('#vinyl-wrapper');
+  const fill = document.getElementById('progress-bar-fill');
+  const ptr = document.getElementById('progress-bar-pointer');
+  const vinyl = record.querySelector('#vinyl-wrapper');
 
-  gsap.to(vinylWrapper, { rotation: 0, duration: 0.4, ease: 'power2.out' });
+  gsap.to(vinyl, { rotation: 0, duration: 0.4, ease: 'power2.out' });
   gsap.to(record, { rotation: 0, duration: 0.4, ease: 'power2.out' });
 
   if (audio) {
     audio.pause();
     audio.currentTime = 0;
   }
-
-  if (barFill && pointer) {
-    gsap.set(barFill, { width: 0 });
-    gsap.set(pointer, { x: 0 });
+  if (fill && ptr) {
+    gsap.set(fill, { width: 0 });
+    gsap.set(ptr, { x: 0 });
   }
 
-  getRecordSpin().pause().kill();
+  getRecordSpin()?.pause().kill();
   setRecordSpin(null);
+
   clearSnappedRecord();
   setRecordReady(false);
 }
 
-// Main Proximity Snap
-export function initProximitySnap(record, player, audio) {
-  const initCenter = getCenterOfElement(record);
-  const playerCenter = getCenterOfElement(player);
-  record.dataset.initCenter = JSON.stringify(initCenter);
+export function initProximitySnap(record, playerEl, audio) {
+  function loop() {
+    const meta = records.find((r) => r.audio === record.dataset.name);
+    if (!meta) return;
 
-  function updateProximity() {
-    const recordCenter = getCenterOfElement(record);
-    const distanceToPlayer = getCenterDistance(recordCenter, playerCenter);
-    const distanceToInit = getCenterDistance(recordCenter, initCenter);
+    // --- 1) update position
+    const c = getCenterOfElement(record);
+    meta.currentPos = { x: c.x, y: c.y };
 
-    const { initArea, readyArea } = getSnapAreas(initCenter, playerCenter);
+    // --- 2) compute area vs threshold
+    const fullInitRect = document.getElementById('init-area')?.getBoundingClientRect();
+    const fullReadyRect = document.getElementById('ready-area')?.getBoundingClientRect();
+    const initThreshRect = document.getElementById('init-area-threshold')?.getBoundingClientRect();
+    const readyThreshRect = document.getElementById('ready-area-threshold')?.getBoundingClientRect();
 
-    const draggedRecord = getCurrentDraggedRecord();
-    const snappedRecord = getSnappedRecord();
-    const isDragged = draggedRecord === record;
-    // const isSnapped = snappedRecord === record;
+    const inside = (r) => r && c.x >= r.left && c.x <= r.right && c.y >= r.top && c.y <= r.bottom;
 
+    meta.isInInitArea = inside(fullInitRect);
+    meta.isInReadyArea = inside(fullReadyRect);
+    meta.isInInitSnapZone = inside(initThreshRect);
+    meta.isInReadySnapZone = inside(readyThreshRect);
+
+    // --- 3) ready‑to‑snap flags (unchanged)
+    meta.isReadyForInitSnap = meta.initDragged && meta.isInInitSnapZone;
+    meta.isReadyForReadySnap = meta.readyDragged && meta.isInReadySnapZone;
+
+    const dragged = getCurrentDraggedRecord();
+    const snapped = getSnappedRecord();
+    const isDragged = dragged === record;
+
+    // --- 4) while dragging: break early
     if (isDragged) {
       record.style.zIndex = 30;
-      const needle = document.getElementById('needle');
-      if (needle) needle.style.zIndex = 20;
+      document.getElementById('needle')?.style.setProperty('z-index', 20);
 
-      if (distanceToPlayer < readyArea) {
-        if (snappedRecord && snappedRecord !== record) {
-          const init = JSON.parse(snappedRecord.dataset.initCenter);
-          snapToTarget(snappedRecord, init, false, true, false);
-          clearSnappedRecord();
-          setRecordReady(false);
-        }
+      // if you hover a new one over the player → boot old
+      if (meta.isReadyForReadySnap && snapped && snapped !== record) {
+        const prev = records.find((r) => r.audio === snapped.dataset.name);
+        snapTween(snapped, prev.initPos, { resetZ: true });
+        prev.readySnapped = false;
+        prev.initSnapped = true;
+        clearSnappedRecord();
+        setRecordReady(false);
+      }
+
+      requestAnimationFrame(loop);
+      return;
+    }
+
+    // --- 5) on release: maintain or change snap state
+    if (snapped === record) {
+      // already snapped → either stay snapped or unsnap
+      if (!meta.isInReadySnapZone) {
+        unsnapToInit(record, meta);
+      } else {
+        snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
       }
     } else {
-      if (snappedRecord === record) {
-        if (distanceToPlayer > readyArea) {
-          unsnapRecord(record, initCenter);
-        } else {
-          snapToTarget(record, playerCenter, true, false, true);
+      // not snapped → see if we need to snap
+      if (meta.isReadyForReadySnap) {
+        // hand‑off old snapped
+        if (snapped && snapped !== record) {
+          const prev = records.find((r) => r.audio === snapped.dataset.name);
+          snapTween(snapped, prev.initPos, { resetZ: true });
+          prev.readySnapped = false;
+          prev.initSnapped = true;
         }
-      } else {
-        if (distanceToPlayer < readyArea) {
-          if (snappedRecord && snappedRecord !== record) {
-            const prevInit = JSON.parse(snappedRecord.dataset.initCenter);
-            snapToTarget(snappedRecord, prevInit, false, true, false);
-          }
 
-          // Overwrite snapped state no matter what
-          setSnappedRecord(record);
-          setCurrentAudio(audio);
-          setCurrentRecord(record);
-          setRecordReady(true);
-          snapToTarget(record, playerCenter, true, false, true);
-        } else if (distanceToInit < initArea) {
-          snapToTarget(record, initCenter, false, true, false);
-        }
+        // snap this one
+        setSnappedRecord(record);
+        records.forEach((r) => (r.readySnapped = false));
+        meta.readySnapped = true;
+        meta.initSnapped = false;
+
+        setCurrentAudio(audio);
+        setCurrentRecord(record);
+        setRecordReady(true);
+        snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
+
+        // ← **clear your drag flags** now that the snap has happened
+        meta.readyDragged = false;
+        meta.initDragged = false;
+      } else if (meta.isReadyForInitSnap) {
+        // snap back to init
+        snapTween(record, meta.initPos, { resetZ: true });
+        meta.initSnapped = true;
+        meta.readySnapped = false;
+
+        // ← **clear your drag flags** once we’ve snapped home
+        meta.readyDragged = false;
+        meta.initDragged = false;
       }
     }
 
-    requestAnimationFrame(updateProximity);
+    requestAnimationFrame(loop);
   }
 
-  updateProximity();
-
-  Draggable.get(record)?.addEventListener('dragend', () => {
-    const draggedRecord = getCurrentDraggedRecord();
-    const snappedRecord = getSnappedRecord();
-    if (draggedRecord) return; // another record still being dragged
-    if (snappedRecord && snappedRecord !== record) return; // this record is not the snapped one
-
-    const recordCenter = getCenterOfElement(record);
-    const distanceToPlayer = getCenterDistance(recordCenter, playerCenter);
-    const distanceToInit = getCenterDistance(recordCenter, initCenter);
-
-    const { initArea, readyArea } = getSnapAreas(initCenter, playerCenter);
-
-    if (distanceToPlayer > readyArea && distanceToInit > initArea) {
-      const init = JSON.parse(record.dataset.initCenter);
-      snapToTarget(record, init, false, true, false);
-    }
-  });
+  loop();
 }

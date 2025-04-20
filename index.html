@@ -12,63 +12,83 @@
       <!-- INIT AREA -->
       <div id="init-area" class="relative flex items-center justify-start w-[40%] h-full border-2 border-blue-500">
         <div
-          id="record-list"
-          class="relative w-[18vh] flex flex-col items-center ml-4 border-2 border-orange-500"
-          style="height: calc(100vh - 2rem)"
+          id="init-area-threshold"
+          class="flex flex-col justify-center items-start w-2/3 h-full border-2 border-green-500"
         >
-          <!-- Records are here (via JS) -->
+          <div id="record-list" class="relative w-[20vh] h-full flex flex-col items-center border-2 border-orange-500">
+            <!-- Records are here (via JS) -->
+          </div>
         </div>
       </div>
 
       <!-- READY AREA -->
       <div
         id="ready-area"
-        class="relative flex  items-center justify-end w-[60%] h-full border-2 border-green-500"
+        class="relative flex flex-col justify-center items-end w-[60%] h-full border-2 border-pink-500"
       >
-      
-        <div class="flex flex-col justify-center items-center self-start mt-[10vh] mr-[10vh] gap-y-6">
-          <div id="player-wrapper" class="flex flex-col justify-center items-center h-full">
-            <div id="player-container" class="relative flex flex-row justify-center items-center h-full gap-4">
-              <img
-                id="player"
-                src="/player/player.png"
-                alt="player"
-                class="relative w-auto h-[60vh] max-w-full select-none object-contain z-0 drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
-              />
-
-              <img
-                id="needle"
-                src="/player/needle.png"
-                alt="needle"
-                class="relative w-auto h-[60vh] max-w-full select-none object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]"
-              />
+        <div
+          id="ready-area-threshold"
+          class="flex flex-col justify-center items-center w-3/4 h-full border-2 border-green-500"
+        >
+          <!-- Audio Player -->
+          <div
+            id="player-full-container"
+            class="flex flex-col self-end justify-center items-center gap-y-6 mr-[6vh] mb-[5vh] w-[80%] border-2 border-yellow-500"
+          >
+            <!-- Vinyl Player -->
+            <div id="player-wrapper" class="flex justify-center items-center h-full">
+              <div id="player-container" class="relative h-full border-2 border-red-500">
+                <img
+                  id="player"
+                  src="/player/player.png"
+                  alt="player"
+                  class="relative w-auto h-[60vh] max-w-full select-none object-contain z-0 drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
+                />
+              </div>
+              <div id="needle-container">
+                <img
+                  id="needle"
+                  src="/player/needle.png"
+                  alt="needle"
+                  class="relative w-auto h-[60vh] max-w-full select-none object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]"
+                />
+              </div>
             </div>
-          </div>
 
-          <!-- UI: Play Button + Progress Bar -->
-          <div id="player-ui" class="flex justify-center items-center gap-x-4 self-end flex-shrink-0">
-            <button id="play-button" class="p-3 bg-[#222] rounded-lg cursor-pointer flex items-center justify-center">
-              <img id="play-icon" src="/ui/play.svg" alt="play" class="w-6 h-6" />
-            </button>
+            <!-- Player Controls -->
             <div
-              id="progress-bar-wrapper"
-              class="w-[250px] h-3 bg-neutral-800 relative overflow-hidden shadow-inners mb-6"
+              id="player-ui"
+              class="flex justify-center items-center gap-x-4 self-start flex-shrink-0 border-2 border-purple-500"
             >
-              <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-green-500 w-0"></div>
+              <button id="play-button" class="p-3 bg-[#222] rounded-lg cursor-pointer flex items-center justify-center">
+                <img id="play-icon" src="/ui/play.svg" alt="play" class="w-6 h-6" />
+              </button>
               <div
-                id="progress-bar-pointer"
-                class="absolute -top-3 w-[4px] h-8 bg-white z-20 transition-opacity duration-300"
-              ></div>
+                id="progress-bar-wrapper"
+                class="w-[53vh] h-3 bg-neutral-800 relative overflow-hidden shadow-inners mb-6"
+              >
+                <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-green-500 w-0"></div>
+                <div
+                  id="progress-bar-pointer"
+                  class="absolute -top-3 w-[4px] h-8 bg-white z-20 transition-opacity duration-300"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Record Message -->
+            <div
+              id="record-message"
+              class="text-white text-lg text-center opacity-0 transition-opacity duration-500 border-2 border-pink-500"
+            >
+              Put the record on the player!
             </div>
           </div>
-
-          <!-- Record Message -->
-          <div id="record-message" class="text-white text-sm text-center opacity-0 transition-opacity duration-500">
-            Put the record on the player!
-          </div>
-
+        </div>
+        <!-- Close #ready-area-threshold -->
       </div>
+      <!-- Close #ready-area -->
     </div>
+    <!-- Close #app -->
 
     <script type="module" src="/src/main.js"></script>
   </body>

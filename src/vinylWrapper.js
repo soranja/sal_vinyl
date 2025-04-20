@@ -7,9 +7,11 @@ export function createVinylWrapper(record, wrapperSize, index) {
   recordWrapper.style.height = `${wrapperSize}px`;
   gsap.set(recordWrapper, { x: 0, y: 0 });
 
-  if (index !== 0) {
-    recordWrapper.style.marginTop = `-${wrapperSize * 0.3}px`;
-  }
+  const rect = recordWrapper.getBoundingClientRect();
+  recordWrapper.dataset.frozenX = rect.left;
+  recordWrapper.dataset.frozenY = rect.top;
+
+  recordWrapper.style.marginTop = `${index === 0 ? 0 : -wrapperSize * 0.3}px`;
 
   recordWrapper.style.zIndex = `${index + 1}`;
   recordWrapper.dataset.index = `${index + 1}`;
@@ -18,7 +20,7 @@ export function createVinylWrapper(record, wrapperSize, index) {
 
   // New vinylWrapper layer
   const vinylWrapper = document.createElement('div');
-  vinylWrapper.className = 'relative h-full w-full';
+  vinylWrapper.className = 'relative max-w-[90%] max-h-[90%] flex flex-col justify-center items-center';
   vinylWrapper.id = 'vinyl-wrapper';
 
   const vinyl = document.createElement('img');
@@ -30,14 +32,16 @@ export function createVinylWrapper(record, wrapperSize, index) {
 
   const cover = document.createElement('img');
   cover.src = record.cover;
+  cover.alt = 'Cover';
+  cover.id = 'cover';
   cover.className = `
-    absolute object-cover
-    top-1/2 left-1/2 
+    absolute
+    top-[50%] left-[51%]
     -translate-x-1/2 -translate-y-1/2
     pointer-events-none
   `.trim();
 
-  const coverSize = wrapperSize * 0.4;
+  const coverSize = wrapperSize * 0.3;
   cover.style.width = `${coverSize}px`;
   cover.style.height = `${coverSize}px`;
 
