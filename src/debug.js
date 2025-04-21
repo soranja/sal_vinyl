@@ -1,23 +1,27 @@
 import gsap from 'gsap';
-import { getSnappedRecord, getCurrentDraggedRecord, readyPos, records } from './constants';
+import { readyPos, records } from './constants';
+
+let dotsVisible = false;
+let debugVisible = false;
+
+const areas = ['init-area', 'ready-area'];
+const snapZones = ['init-area-threshold', 'ready-area-threshold'];
 
 function createDebugPanel() {
   const debugPanel = document.createElement('div');
-  debugPanel.className = `
-    fixed top-2 right-2 z-[1500] bg-black/80 text-white p-3 rounded space-y-2 text-sm debug-toggleable
-  `;
+  debugPanel.id = 'debug-panel';
+  debugPanel.className = 'fixed top-2 right-2 z-[1500] bg-black/80 text-white p-3 rounded space-y-2 text-sm';
   debugPanel.innerHTML = `
-    <label><input type="checkbox" id="toggle-areas" checked />Areas</label><br/>
-    <label><input type="checkbox" id="toggle-snap-zones" checked />Snap Zones</label><br/>
-    <label><input type="checkbox" id="toggle-dots" checked />Position Dots</label><br/>
-    <label><input type="checkbox" id="toggle-state-panel" checked />State Panel</label>
+    <label><input type="checkbox" id="toggle-areas"/>Areas</label><br/>
+    <label><input type="checkbox" id="toggle-snap-zones"/>Snap Zones</label><br/>
+    <label><input type="checkbox" id="toggle-dots"/>Position Dots</label><br/>
+    <label><input type="checkbox" id="toggle-state-panel"/>State Panel</label>
   `;
   document.body.appendChild(debugPanel);
 }
 
 function applyDebugVisibility() {
   document.getElementById('toggle-areas').onchange = (e) => {
-    const areas = ['init-area', 'ready-area'];
     areas.forEach((area) => {
       const el = document.getElementById(area);
       el.style.outline = e.target.checked ? '2px solid rgba(0, 123, 255, 0.6)' : 'none';
@@ -25,7 +29,6 @@ function applyDebugVisibility() {
   };
 
   document.getElementById('toggle-snap-zones').onchange = (e) => {
-    const snapZones = ['init-area-threshold', 'ready-area-threshold'];
     snapZones.forEach((id) => {
       const el = document.getElementById(id);
       el.style.outline = e.target.checked ? '2px dashed rgba(0, 255, 0, 0.5)' : 'none';
@@ -33,7 +36,12 @@ function applyDebugVisibility() {
   };
 
   document.getElementById('toggle-dots').onchange = (e) => {
-    document.querySelectorAll('.debug-dot').forEach((el) => (el.style.display = e.target.checked ? 'block' : 'none'));
+    dotsVisible = e.target.checked;
+    document.querySelectorAll('.debug-dot').forEach((el) => {
+      el.style.display = dotsVisible ? 'block' : 'none';
+    });
+
+    updateStaticDots(dotsVisible);
   };
 
   document.getElementById('toggle-state-panel').onchange = (e) => {
@@ -55,7 +63,6 @@ function initStatePanel(elements = []) {
 
   document.body.appendChild(statePanel);
 
-  // Full list of boolean flags we want to watch in the UI
   const flagList = [
     'isInInitArea',
     'isInInitSnapZone',
@@ -92,19 +99,21 @@ function initStatePanel(elements = []) {
   updateUI();
 }
 
-function drawInitCenterDot({ x, y }, label = '', color = '') {
+function drawInitCenterDot({ x, y }, label = '', color = '', visibility = false) {
   const marker = document.createElement('div');
   marker.className = `
-    fixed w-[10px] h-[10px] ${color} rounded-full z-[2000] 
+    fixed w-[13px] h-[13px] ${color} rounded-full z-[2000] 
     pointer-events-none 
-    border border-white text-[9px] text-center text-white
+    border border-white text-[11px] text-center text-white
     flex items-center justify-center 
     translate-x-[-50%] translate-y-[-50%]
+    ${visibility ? 'block' : 'hidden'}
   `.trim();
+  marker.classList.add('debug-dot');
   marker.style.left = `${x}px`;
   marker.style.top = `${y}px`;
   marker.textContent = label;
-  marker.classList.add('debug-dot', 'debug-toggleable');
+
   document.body.appendChild(marker);
   return marker;
 }
@@ -118,11 +127,13 @@ export function getCenterOfElement(el) {
 }
 
 export function updateStaticDots() {
+  document.querySelectorAll('.debug-dot').forEach((el) => el.remove());
+
   const player = document.getElementById('player');
   const readyCenter = getCenterOfElement(player);
   readyPos.x = readyCenter.x;
   readyPos.y = readyCenter.y;
-  drawInitCenterDot(readyCenter, 'R', 'bg-red-500');
+  drawInitCenterDot(readyCenter, 'R', 'bg-red-500', dotsVisible);
 
   const allRecords = document.querySelectorAll('#record-list > div');
 
@@ -134,7 +145,7 @@ export function updateStaticDots() {
       records[idx].initPos = center;
       rec.dataset.initCenter = JSON.stringify(center);
 
-      drawInitCenterDot(center, rec.dataset.index, 'bg-blue-500');
+      drawInitCenterDot(center, `I${rec.dataset.index}`, 'bg-purple-500', dotsVisible);
     });
 
     initStatePanel([
@@ -142,58 +153,39 @@ export function updateStaticDots() {
       ...Array.from(allRecords).map((el, i) => ({ id: `${i + 1}`, el, recordData: records[i] })),
     ]);
   });
+}
 
+function initDebugPanel() {
   createDebugPanel();
   applyDebugVisibility();
 }
 
-export function logStates() {
-  const dragged = getCurrentDraggedRecord();
-  const snapped = getSnappedRecord();
-  const allRecords = document.querySelectorAll('#record-list > div');
-  const needle = document.getElementById('needle');
+function clearDebugPanel() {
+  document.getElementById('debug-panel')?.remove();
+  document.querySelectorAll('.debug-toggleable').forEach((el) => el.remove());
+  document.querySelectorAll('.debug-dot').forEach((el) => el.remove());
 
-  const initSnapped = [];
-  const playerSnapped = [];
-
-  allRecords.forEach((record) => {
-    const center = record.getBoundingClientRect();
-    const playerCenter = document.getElementById('player').getBoundingClientRect();
-    const distToPlayer = Math.hypot(center.x - playerCenter.x, center.y - playerCenter.y);
-
-    if (distToPlayer < 150) {
-      playerSnapped.push(record);
-    } else {
-      initSnapped.push(record);
-    }
+  areas.forEach((area) => {
+    const el = document.getElementById(area);
+    if (el) el.style.outline = 'none';
   });
 
-  console.log({
-    currentDraggedRecord: dragged
-      ? {
-          name: dragged.dataset.name,
-          index: dragged.dataset.index,
-          position: {
-            x: gsap.getProperty(dragged, 'x'),
-            y: gsap.getProperty(dragged, 'y'),
-          },
-        }
-      : null,
-
-    initSnappedRecords: initSnapped.map((r) => ({ name: r.dataset.name, index: r.dataset.index })),
-
-    playerSnappedRecords: playerSnapped.map((r) => ({ name: r.dataset.name, index: r.dataset.index })),
-
-    allInitialZIndexes: Array.from(allRecords).map((r) => ({
-      name: r.dataset.name,
-      index: r.dataset.index,
-      zIndex: r.style.zIndex,
-    })),
-
-    snappedRecordZIndex: snapped
-      ? { name: snapped.dataset.name, index: snapped.dataset.index, zIndex: snapped.style.zIndex }
-      : null,
-
-    needleZIndex: needle ? window.getComputedStyle(needle).zIndex : null,
+  snapZones.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.outline = 'none';
   });
+
+  dotsVisible = false;
 }
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'F4') {
+    debugVisible = !debugVisible;
+    if (debugVisible) {
+      initDebugPanel();
+      updateStaticDots();
+    } else {
+      clearDebugPanel();
+    }
+  }
+});
