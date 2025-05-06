@@ -1,11 +1,71 @@
 @import 'tailwindcss';
 
 @layer utilities {
-  .bg-deep-space {
-    background: radial-gradient(circle, rgba(0, 24, 144, 1) 0%, rgba(4, 0, 42, 1) 100%);
+  .bg-side-vingette {
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.3) 20%,
+      rgba(0, 0, 0, 0) 40%,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, 0.3) 80%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
   }
 }
 
+:root {
+  --z-record-base: 10;
+  --z-needle-base: 5;
+  --z-needle-playing: 40;
+}
+
 #play-icon {
-  filter: brightness(0) invert(1);
+  filter: invert(1);
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 10vh;
+  cursor: pointer;
+
+  background: linear-gradient(to right, #4caf50 var(--volume-percent, 0%), #111 var(--volume-percent, 0%));
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 0;
+  background: transparent;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background-color: #fff;
+  width: 16px;
+  height: 16px;
+  border: solid 2px #000;
+  border-radius: 0;
+  margin-top: -4px;
+}
+
+input[type='range']::-moz-range-track {
+  height: 8px;
+  border-radius: 0;
+  background: transparent;
+}
+
+input[type='range']::-moz-range-progress {
+  background-color: #4caf50;
+  height: 8px;
+}
+
+input[type='range']::-moz-range-thumb {
+  background-color: #fff;
+  width: 12px;
+  height: 12px;
+  border: solid 2px #000;
+  border-radius: 0;
 }

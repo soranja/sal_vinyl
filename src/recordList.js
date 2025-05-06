@@ -8,21 +8,20 @@ export function createRecordList(container) {
   const wrapperSize = recordListWidth * 0.8;
 
   records.forEach((record, index) => {
-    const zLayer = records.length - index;
+    const zLayer = 10 + index;
 
     const { recordWrapper, _, vinyl } = createVinylWrapper(record, wrapperSize, index);
 
     recordWrapper.dataset.index = index + 1;
     recordWrapper.style.zIndex = zLayer;
+    recordWrapper.dataset.initZ = `${zLayer}`;
 
     container.appendChild(recordWrapper);
 
-    const player = document.getElementById('player');
     const audio = new Audio(record.audio);
     audio.loop = false;
-    audio.volume = 0.1;
 
-    initProximitySnap(recordWrapper, player, audio);
+    initProximitySnap(recordWrapper, audio);
     initRecordDragging(recordWrapper, vinyl);
   });
 }

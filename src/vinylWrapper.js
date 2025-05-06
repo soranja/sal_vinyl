@@ -13,12 +13,10 @@ export function createVinylWrapper(record, wrapperSize, index) {
 
   recordWrapper.style.marginTop = `${index === 0 ? 0 : -wrapperSize * 0.3}px`;
 
-  recordWrapper.style.zIndex = `${index + 1}`;
   recordWrapper.dataset.index = `${index + 1}`;
   recordWrapper.dataset.initZ = `${index + 1}`;
   recordWrapper.dataset.name = record.audio;
 
-  // New vinylWrapper layer
   const vinylWrapper = document.createElement('div');
   vinylWrapper.className = 'relative max-w-[90%] max-h-[90%] flex flex-col justify-center items-center';
   vinylWrapper.id = 'vinyl-wrapper';

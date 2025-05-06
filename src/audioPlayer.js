@@ -20,15 +20,16 @@ export function initAudioPlayer() {
   const barWrapper = document.getElementById('progress-bar-wrapper');
   const barFill = document.getElementById('progress-bar-fill');
   const pointer = document.getElementById('progress-bar-pointer');
+  const volumeControl = document.getElementById('volume-control');
   const message = document.getElementById('record-message');
 
-  function showMessage() {
-    message.classList.remove('opacity-0');
-    clearTimeout(message._timeout);
-    message._timeout = setTimeout(() => {
-      message.classList.add('opacity-0');
-    }, 2000);
-  }
+  // function showMessage() {
+  //   message.classList.remove('opacity-0');
+  //   clearTimeout(message._timeout);
+  //   message._timeout = setTimeout(() => {
+  //     message.classList.add('opacity-0');
+  //   }, 2000);
+  // }
 
   function updatePointerState() {
     pointer.style.visibility = isRecordReady() ? 'visible' : 'hidden';
@@ -57,6 +58,21 @@ export function initAudioPlayer() {
     gsap.set(pointer, { x: 0 });
   }
 
+  function setVolume(volume) {
+    volume = Math.min(1, Math.max(0, volume));
+    volumeControl.value = volume.toFixed(2);
+    const audio = getCurrentAudio();
+    if (audio) audio.volume = volume;
+    const cent = Math.round(volume * 100) + '%';
+    volumeControl.style.setProperty('--volume-percent', cent);
+  }
+
+  setVolume(parseFloat(volumeControl.value) || 0);
+
+  volumeControl.addEventListener('input', () => {
+    setVolume(parseFloat(volumeControl.value));
+  });
+
   requestAnimationFrame(() => {
     const barWidth = barWrapper.offsetWidth;
     const maxX = barWidth - pointer.offsetWidth;
@@ -65,10 +81,7 @@ export function initAudioPlayer() {
       type: 'x',
       bounds: { minX: 0, maxX },
       onPress: () => {
-        if (!isRecordReady()) {
-          showMessage();
-          return false;
-        }
+        if (!isRecordReady()) return false;
       },
       onDragStart: function () {
         if (!isRecordReady()) return false;
@@ -89,7 +102,7 @@ export function initAudioPlayer() {
 
         gsap.set(barFill, { width: this.x });
         gsap.set(record, { rotation: ratio * 360 });
-        gsap.set(needle, { rotation: 30 + (45 - 30) * ratio });
+        gsap.set(needle, { rotation: 30 + (45 - 30) * ratio, zIndex: 51 });
       },
       onDragEnd: function () {
         if (!isRecordReady()) return;
@@ -115,21 +128,21 @@ export function initAudioPlayer() {
     updatePointerState();
   });
 
-  // Play/Pause toggle
   playButton.addEventListener('click', () => {
-    if (!isRecordReady()) {
-      showMessage();
-      return;
-    }
+    if (!isRecordReady()) return;
 
     const currentAudio = getCurrentAudio();
     const currentRecord = getCurrentRecord();
     const vinylWrapper = currentRecord.querySelector('#vinyl-wrapper');
     if (!currentAudio || !currentRecord) return;
 
+    currentAudio.volume = parseFloat(volumeControl.value);
+
     if (!isPlayed()) {
       disableAllDraggables();
       const currentSpin = getRecordSpin();
+      needle.style.zIndex = 51;
+
       if (!currentSpin || !currentSpin.isActive()) {
         currentSpin?.kill();
         setRecordSpin(null);
@@ -147,7 +160,6 @@ export function initAudioPlayer() {
         ease: 'power2.out',
         onStart: () => {
           document.getElementById('play-icon').src = '/ui/pause.svg';
-          currentRecord.style.zIndex = 20;
           Draggable.get(currentRecord)?.disable();
         },
         onComplete: () => {
@@ -156,11 +168,13 @@ export function initAudioPlayer() {
           updateNeedle(currentAudio, needle);
           updateProgress();
 
-          // attach one-time ended listener here
           currentAudio.addEventListener(
             'ended',
             () => {
               getRecordSpin()?.pause();
+              Draggable.get(currentRecord)?.enable();
+              enableAllDraggables();
+              needle.style.zIndex = 5;
               gsap.to(vinylWrapper, { rotation: 0, duration: 1, ease: 'power2.out' });
 
               gsap.to(needle, {
@@ -169,8 +183,6 @@ export function initAudioPlayer() {
                 ease: 'power2.out',
                 onStart: () => {
                   document.getElementById('play-icon').src = '/ui/play.svg';
-                  currentRecord.style.zIndex = 30;
-                  Draggable.get(currentRecord)?.enable();
                 },
               });
 
@@ -187,6 +199,7 @@ export function initAudioPlayer() {
       enableAllDraggables();
       currentAudio.pause();
       getRecordSpin()?.pause();
+      needle.style.zIndex = 5;
 
       gsap.to(needle, {
         rotation: 0,
@@ -194,7 +207,6 @@ export function initAudioPlayer() {
         ease: 'power2.out',
         onStart: () => {
           document.getElementById('play-icon').src = '/ui/play.svg';
-          currentRecord.style.zIndex = 30;
           Draggable.get(currentRecord)?.enable();
         },
       });
@@ -212,4 +224,38 @@ export function initAudioPlayer() {
     },
     true,
   );
+
+  document.addEventListener('keydown', (e) => {
+    const audio = getCurrentAudio();
+    if (!audio) return;
+
+    switch (e.code) {
+      case 'Space':
+        e.preventDefault();
+        playButton.click();
+        break;
+
+      case 'ArrowUp':
+        e.preventDefault();
+        setVolume(getCurrentAudio().volume + 0.1);
+        break;
+
+      case 'ArrowDown':
+        e.preventDefault();
+        setVolume(getCurrentAudio().volume - 0.1);
+        break;
+
+      case 'ArrowLeft':
+        e.preventDefault();
+        audio.currentTime = Math.max(0, audio.currentTime - 5);
+        updateProgress();
+        break;
+
+      case 'ArrowRight':
+        e.preventDefault();
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+        updateProgress();
+        break;
+    }
+  });
 }

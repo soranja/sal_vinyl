@@ -2,7 +2,7 @@
 const recordState = {
   snappedRecord: null,
   spinningInstance: null,
-  isReadyToPlay: false,
+  isRecordReady: false,
   currentDraggedRecord: null,
 };
 
@@ -23,7 +23,7 @@ export function isAnyRecordSnapped() {
 }
 
 export function isRecordReady() {
-  return recordState.isReadyToPlay;
+  return recordState.isRecordReady;
 }
 
 export function isPlayed() {
@@ -52,7 +52,7 @@ export function setSnappedRecord(record) {
 }
 
 export function setRecordReady(value) {
-  recordState.isReadyToPlay = value;
+  recordState.isRecordReady = value;
 }
 
 export function setCurrentDraggedRecord(record) {
@@ -88,7 +88,7 @@ export function clearSnappedRecord() {
 export const records = [
   {
     id: 'blade',
-    title: 'Blade',
+    title: 'RZA - Fatal (Blade Trinity OST)',
     audio: '/audio/fatal.mp3',
     cover: '/covers/blade/blade.png',
     videoCover: '/covers/blade/fatal.webm',
@@ -111,7 +111,7 @@ export const records = [
   },
   {
     id: 'ameli',
-    title: 'Amélie',
+    title: "Yann Tiersen - La Valse d'Amélie (Amélie OST)",
     audio: '/audio/amelie.mp3',
     cover: '/covers/ameli.png',
     videoCover: null,
@@ -134,7 +134,7 @@ export const records = [
   },
   {
     id: 'banlieue-13',
-    title: 'Banlieue 13',
+    title: 'Da Octopuss - Motors (Banlieue 13)',
     audio: '/audio/motors.mp3',
     cover: '/covers/banlieue-13.png',
     videoCover: null,
@@ -157,7 +157,7 @@ export const records = [
   },
   {
     id: 'big-bad-wolf',
-    title: 'Big Bad Wolf',
+    title: 'Duck Sauce - Big Bad Wolf',
     audio: '/audio/big-bad-wolf.mp3',
     cover: '/covers/big-bad-wolf.png',
     videoCover: null,
@@ -180,7 +180,7 @@ export const records = [
   },
   {
     id: 'glukoza',
-    title: 'Glukoza',
+    title: 'Glukoza - Малыш',
     audio: '/audio/malish.mp3',
     cover: '/covers/glukoza.png',
     videoCover: null,
@@ -203,7 +203,7 @@ export const records = [
   },
   {
     id: 'oh-dirty-fingers',
-    title: 'Oh Dirty Fingers',
+    title: 'Oh Dirty Fingers - 歌声与微笑',
     audio: '/audio/oh-dirty-fingers.mp3',
     cover: '/covers/oh-dirty-fingers.png',
     videoCover: null,
@@ -226,7 +226,7 @@ export const records = [
   },
   {
     id: 'shadowax',
-    title: 'Shadowax',
+    title: 'Shadowax - A-B',
     audio: '/audio/a-b.mp3',
     cover: '/covers/shadowax.png',
     videoCover: null,
@@ -249,7 +249,7 @@ export const records = [
   },
   {
     id: 'starcardigan',
-    title: 'Starcardigan',
+    title: 'Starcardigan - Raw',
     audio: '/audio/raw.mp3',
     cover: '/covers/starcardigan.png',
     videoCover: null,
@@ -272,7 +272,7 @@ export const records = [
   },
   {
     id: 'wasabi',
-    title: 'Wasabi',
+    title: 'Exhibition - Techno Metal (Wasabi OST)',
     audio: '/audio/techno-metal.mp3',
     cover: '/covers/wasabi.png',
     videoCover: null,

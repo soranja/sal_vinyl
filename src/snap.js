@@ -30,21 +30,12 @@ function snapTween(record, target, opts = {}) {
     duration: 0.8,
     ease: 'power3.out',
     overwrite: 'auto',
-    onStart() {
-      if (opts.playerSnap) {
-        record.style.zIndex = 30;
-        document.getElementById('needle')?.style.setProperty('z-index', 40);
-      }
-      if (opts.resetZ && record.dataset.initZ) {
-        record.style.zIndex = record.dataset.initZ;
-      }
-    },
   });
 }
 
 function unsnapToInit(record, meta) {
-  // identical to before…
   snapTween(record, meta.initPos, { resetZ: true });
+
   meta.readySnapped = false;
   meta.initSnapped = true;
   meta.readyDragged = false;
@@ -73,16 +64,14 @@ function unsnapToInit(record, meta) {
   setRecordReady(false);
 }
 
-export function initProximitySnap(record, playerEl, audio) {
+export function initProximitySnap(record, audio) {
   function loop() {
     const meta = records.find((r) => r.audio === record.dataset.name);
     if (!meta) return;
 
-    // --- 1) update position
     const c = getCenterOfElement(record);
     meta.currentPos = { x: c.x, y: c.y };
 
-    // --- 2) compute area vs threshold
     const fullInitRect = document.getElementById('init-area')?.getBoundingClientRect();
     const fullReadyRect = document.getElementById('ready-area')?.getBoundingClientRect();
     const initThreshRect = document.getElementById('init-area-threshold')?.getBoundingClientRect();
@@ -95,7 +84,6 @@ export function initProximitySnap(record, playerEl, audio) {
     meta.isInInitSnapZone = inside(initThreshRect);
     meta.isInReadySnapZone = inside(readyThreshRect);
 
-    // --- 3) ready‑to‑snap flags (unchanged)
     meta.isReadyForInitSnap = meta.initDragged && meta.isInInitSnapZone;
     meta.isReadyForReadySnap = meta.readyDragged && meta.isInReadySnapZone;
 
@@ -103,12 +91,7 @@ export function initProximitySnap(record, playerEl, audio) {
     const snapped = getSnappedRecord();
     const isDragged = dragged === record;
 
-    // --- 4) while dragging: break early
     if (isDragged) {
-      record.style.zIndex = 30;
-      document.getElementById('needle')?.style.setProperty('z-index', 20);
-
-      // if you hover a new one over the player → boot old
       if (meta.isReadyForReadySnap && snapped && snapped !== record) {
         const prev = records.find((r) => r.audio === snapped.dataset.name);
         snapTween(snapped, prev.initPos, { resetZ: true });
@@ -122,18 +105,14 @@ export function initProximitySnap(record, playerEl, audio) {
       return;
     }
 
-    // --- 5) on release: maintain or change snap state
     if (snapped === record) {
-      // already snapped → either stay snapped or unsnap
       if (!meta.isInReadySnapZone) {
         unsnapToInit(record, meta);
       } else {
         snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
       }
     } else {
-      // not snapped → see if we need to snap
       if (meta.isReadyForReadySnap) {
-        // hand‑off old snapped
         if (snapped && snapped !== record) {
           const prev = records.find((r) => r.audio === snapped.dataset.name);
           snapTween(snapped, prev.initPos, { resetZ: true });
@@ -141,7 +120,6 @@ export function initProximitySnap(record, playerEl, audio) {
           prev.initSnapped = true;
         }
 
-        // snap this one
         setSnappedRecord(record);
         records.forEach((r) => (r.readySnapped = false));
         meta.readySnapped = true;
@@ -152,16 +130,12 @@ export function initProximitySnap(record, playerEl, audio) {
         setRecordReady(true);
         snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
 
-        // ← **clear your drag flags** now that the snap has happened
         meta.readyDragged = false;
         meta.initDragged = false;
       } else if (meta.isReadyForInitSnap) {
-        // snap back to init
         snapTween(record, meta.initPos, { resetZ: true });
         meta.initSnapped = true;
         meta.readySnapped = false;
-
-        // ← **clear your drag flags** once we’ve snapped home
         meta.readyDragged = false;
         meta.initDragged = false;
       }
