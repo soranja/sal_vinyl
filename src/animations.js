@@ -20,7 +20,7 @@ export function createRecordSpin(record) {
   existing?.kill();
 
   const spin = gsap.to(record, {
-    rotation: 360,
+    rotation: '+=360',
     duration: 10,
     ease: 'none',
     repeat: -1,

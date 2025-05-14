@@ -17,31 +17,24 @@ const audioState = {
 export function getSnappedRecord() {
   return recordState.snappedRecord;
 }
-
 export function isAnyRecordSnapped() {
   return recordState.snappedRecord !== null;
 }
-
 export function isRecordReady() {
   return recordState.isRecordReady;
 }
-
 export function isPlayed() {
   return audioState.isPlayed;
 }
-
 export function getCurrentDraggedRecord() {
   return recordState.currentDraggedRecord;
 }
-
 export function getRecordSpin() {
   return recordState.spinningInstance;
 }
-
 export function getCurrentAudio() {
   return audioState.audio;
 }
-
 export function getCurrentRecord() {
   return audioState.record;
 }
@@ -50,27 +43,21 @@ export function getCurrentRecord() {
 export function setSnappedRecord(record) {
   recordState.snappedRecord = record;
 }
-
 export function setRecordReady(value) {
   recordState.isRecordReady = value;
 }
-
 export function setCurrentDraggedRecord(record) {
   recordState.currentDraggedRecord = record;
 }
-
 export function setRecordSpin(spin) {
   recordState.spinningInstance = spin;
 }
-
 export function setCurrentAudio(audio) {
   audioState.audio = audio;
 }
-
 export function setCurrentRecord(record) {
   audioState.record = record;
 }
-
 export function setPlayState(state) {
   audioState.isPlayed = state;
 }
@@ -79,7 +66,6 @@ export function setPlayState(state) {
 export function clearCurrentDraggedRecord() {
   recordState.currentDraggedRecord = null;
 }
-
 export function clearSnappedRecord() {
   recordState.snappedRecord = null;
 }

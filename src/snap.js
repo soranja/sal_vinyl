@@ -15,7 +15,7 @@ import {
   records,
 } from './constants';
 
-gsap.registerPlugin();
+// gsap.registerPlugin();
 
 function snapTween(record, target, opts = {}) {
   if (record.dataset.frozen === 'true') return;
@@ -41,24 +41,26 @@ function unsnapToInit(record, meta) {
   meta.readyDragged = false;
 
   const audio = getCurrentAudio();
-  const fill = document.getElementById('progress-bar-fill');
-  const ptr = document.getElementById('progress-bar-pointer');
-  const vinyl = record.querySelector('#vinyl-wrapper');
+  const vinylWrapper = record.querySelector('#vinyl-wrapper');
+  const progressBarFill = document.getElementById('progress-bar-fill');
+  const progressBarPointer = document.getElementById('progress-bar-pointer');
 
-  gsap.to(vinyl, { rotation: 0, duration: 0.4, ease: 'power2.out' });
+  // Conflicts with rotationSpin?
+  gsap.to(vinylWrapper, { rotation: 0, duration: 0.4, ease: 'power2.out' });
   gsap.to(record, { rotation: 0, duration: 0.4, ease: 'power2.out' });
 
   if (audio) {
     audio.pause();
     audio.currentTime = 0;
   }
-  if (fill && ptr) {
-    gsap.set(fill, { width: 0 });
-    gsap.set(ptr, { x: 0 });
+  if (progressBarFill && progressBarPointer) {
+    gsap.set(progressBarFill, { width: 0 });
+    gsap.set(progressBarPointer, { x: 0 });
   }
 
-  getRecordSpin()?.pause().kill();
-  setRecordSpin(null);
+  // getRecordSpin()?.pause().kill();
+  // setRecordSpin(null);
+  // ??
 
   clearSnappedRecord();
   setRecordReady(false);
