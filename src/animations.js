@@ -29,3 +29,63 @@ export function createRecordSpin(record) {
 
   setRecordSpin(spin);
 }
+
+export function fadeInRecordInfo(meta) {
+  const titleEl = document.getElementById('record-title');
+  const descEl = document.getElementById('record-description');
+  const bgElem = document.getElementById('ready-area-background');
+  if (!titleEl || !descEl || !bgElem) return;
+
+  // Prepare: hide the texts, reset opacities
+  titleEl.classList.add('hidden');
+  descEl.classList.add('hidden');
+  gsap.set([titleEl, descEl, bgElem], { opacity: 0 });
+
+  const tl = gsap.timeline();
+  // 1) fade‐out old BG
+  tl.to(bgElem, { opacity: 0, duration: 0.5 })
+
+    // 2) swap in new text + background image
+    .add(() => {
+      titleEl.textContent = meta.title;
+      descEl.textContent = meta.description;
+      bgElem.style.backgroundImage = `url(${meta.background})`;
+    })
+
+    // 3) fade‐in BG, then reveal + fade‐in text
+    .to(bgElem, { opacity: 0.2, duration: 0.5 }, '>')
+    .to(
+      [titleEl, descEl],
+      {
+        opacity: 1,
+        duration: 0.5,
+        onStart: () => {
+          titleEl.classList.remove('hidden');
+          descEl.classList.remove('hidden');
+        },
+      },
+      '<',
+    );
+}
+
+export function fadeOutRecordInfo() {
+  const titleEl = document.getElementById('record-title');
+  const descEl = document.getElementById('record-description');
+  const bgElem = document.getElementById('ready-area-background');
+  if (!titleEl || !descEl || !bgElem) return;
+
+  // fade everything out
+  gsap.to([bgElem, titleEl, descEl], {
+    opacity: 0,
+    duration: 0.5,
+    onComplete: () => {
+      // then clear + hide text again
+      titleEl.classList.add('hidden');
+      descEl.classList.add('hidden');
+      titleEl.textContent = '';
+      descEl.textContent = '';
+      // clear BG override so default CSS tiling shows
+      bgElem.style.backgroundImage = '';
+    },
+  });
+}

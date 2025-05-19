@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { getCenterOfElement } from './debug';
+import { fadeInRecordInfo, fadeOutRecordInfo } from './animations.js';
 import {
   setSnappedRecord,
   clearSnappedRecord,
@@ -64,6 +65,7 @@ function unsnapToInit(record, meta) {
 
   clearSnappedRecord();
   setRecordReady(false);
+  fadeOutRecordInfo();
 }
 
 export function initProximitySnap(record, audio) {
@@ -130,6 +132,8 @@ export function initProximitySnap(record, audio) {
         setCurrentAudio(audio);
         setCurrentRecord(record);
         setRecordReady(true);
+        fadeInRecordInfo(meta);
+
         snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
 
         meta.readyDragged = false;
