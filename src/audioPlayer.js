@@ -23,8 +23,6 @@ export function initAudioPlayer() {
   const pointer = document.getElementById('progress-bar-pointer');
   const volumeControl = document.getElementById('volume-control');
 
-  // Why record, recordSpin, and audio can't be global here?
-
   // Updates PROGRESS BAR POINTER visibility
   function updatePointerState() {
     pointer.style.visibility = isRecordReady() ? 'visible' : 'hidden';
@@ -277,4 +275,4 @@ export function initAudioPlayer() {
         break;
     }
   });
-}
+} // Rotation not working, needle brakes on arrow keys wind

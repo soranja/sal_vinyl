@@ -1,6 +1,7 @@
 import { initAudioPlayer } from './audioPlayer.js';
 import { createRecordList } from './recordList.js';
 import { updateStaticDots } from './debug';
+import { showWelcomeModal } from './modal.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const recordListContainer = document.getElementById('record-list');
@@ -8,15 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const description = document.getElementById('record-description');
   const audioBackground = document.getElementById('ready-area-background');
 
-  if (title) {
-    title.textContent = '';
-    title.classList.add('hidden');
-  }
-  if (description) {
-    description.textContent = '';
-    description.classList.add('hidden');
-  }
-  if (audioBackground) audioBackground.style.backgroundImage = '';
+  showWelcomeModal();
+
+  // if (title) {
+  //   title.textContent = '';
+  //   title.classList.add('hidden');
+  // }
+  // if (description) {
+  //   description.textContent = '';
+  //   description.classList.add('hidden');
+  // }
+  // if (audioBackground) audioBackground.style.backgroundImage = '';
 
   initAudioPlayer();
   createRecordList(recordListContainer);

@@ -36,6 +36,8 @@ export function fadeInRecordInfo(meta) {
   const bgElem = document.getElementById('ready-area-background');
   if (!titleEl || !descEl || !bgElem) return;
 
+  const isLargeScreen = window.innerWidth >= 1024;
+
   // Prepare: hide the texts, reset opacities
   titleEl.classList.add('hidden');
   descEl.classList.add('hidden');
@@ -54,18 +56,32 @@ export function fadeInRecordInfo(meta) {
 
     // 3) fade‐in BG, then reveal + fade‐in text
     .to(bgElem, { opacity: 0.2, duration: 0.5 }, '>')
+
     .to(
-      [titleEl, descEl],
+      [titleEl],
       {
         opacity: 1,
         duration: 0.5,
         onStart: () => {
           titleEl.classList.remove('hidden');
+        },
+      },
+      '<',
+    );
+
+  if (isLargeScreen) {
+    tl.to(
+      [descEl],
+      {
+        opacity: 1,
+        duration: 0.5,
+        onStart: () => {
           descEl.classList.remove('hidden');
         },
       },
       '<',
     );
+  }
 }
 
 export function fadeOutRecordInfo() {

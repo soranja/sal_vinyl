@@ -11,7 +11,7 @@
   <body>
     <div
       id="app"
-      class="relative flex w-full h-screen bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
+      class="relative flex flex-col lg:flex-row w-full h-screen bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
     >
       <div id="vignette" class="absolute inset-0 pointer-events-none bg-side-vingette z-1"></div>
       <div
@@ -20,9 +20,15 @@
       ></div>
 
       <!-- INIT AREA -->
-      <div id="init-area" class="relative flex items-center justify-start w-[23vh] h-full z-50">
+      <div
+        id="init-area"
+        class="w-[100vw] h-[10%] top-0 left-0 flex flex-row relative lg:w-[23vh] lg:h-full items-center justify-start z-50"
+      >
         <div id="init-area-threshold" class="flex flex-col justify-center items-start w-full h-full">
-          <div id="record-list" class="relative w-[22vh] h-full flex flex-col items-center bg-yellow-500">
+          <div
+            id="record-list"
+            class="w-[100vw] top-0 left-0 flex flex-row relative lg:w-[22vh] h-full lg:flex-col items-center bg-yellow-500"
+          >
             <!-- Records are here (via JS) -->
           </div>
         </div>
@@ -30,7 +36,10 @@
 
       <!-- READY AREA -->
       <div id="ready-area" class="relative flex flex-col justify-center items-end w-full h-full">
-        <div id="ready-area-threshold" class="flex justify-start items-center w-11/12 h-full">
+        <div
+          id="ready-area-threshold"
+          class="flex flex-col lg:flex-row justify-center lg:justify-start items-center w-full lg:w-11/12 h-full"
+        >
           <!-- Vinyl Player -->
           <div id="player-wrapper" class="flex px-6 py-10 w-full">
             <div id="player-container">
@@ -54,8 +63,13 @@
             id="record-info-wrapper"
             class="lg:w-full lg:h-[60vh] lg:flex flex-col grow-0 items-start justify-start border-2 border-amber-300/0"
           >
-            <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center w-2/3 px-[5vh]">
-              <div id="record-title" class="hidden text-4xl font-bold">Title</div>
+            <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center lg:w-2/3 lg:px-[5vh]">
+              <div
+                id="record-title"
+                class="hidden font-bold absolute ml-6 w-[350px] left-0 text-xl lg:static lg:text-4xl lg:w-auto lg:ml-0"
+              >
+                Title
+              </div>
               <div id="record-description" class="hidden text-xs text-justify italic bg-black/50 p-8">Description</div>
             </div>
           </div>
