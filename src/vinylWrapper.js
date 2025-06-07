@@ -11,7 +11,9 @@ export function createVinylWrapper(record, wrapperSize, index) {
   recordWrapper.dataset.frozenX = rect.left;
   recordWrapper.dataset.frozenY = rect.top;
 
-  recordWrapper.style.marginTop = `${index === 0 ? 0 : -wrapperSize * 0.3}px`;
+  // recordWrapper.style.marginTop = `${index === 0 ? 0 : -wrapperSize * 0.4}px`;
+  recordWrapper.style.marginLeft = `${index === 0 ? 0 : -wrapperSize * 0.18}px`;
+  // conditional margin needed for mobile / desktop + first record behaves weirdly
 
   recordWrapper.dataset.index = `${index + 1}`;
   recordWrapper.dataset.initZ = `${index + 1}`;
