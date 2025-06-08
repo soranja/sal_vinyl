@@ -6,7 +6,6 @@ gsap.registerPlugin(Draggable);
 
 const draggables = [];
 const app = document.querySelector('#app');
-const padding = 10; // make it less strict and more responsive (10 is good for laptops for example)
 
 // Too overhead, possibly to write shorter?
 let bounds = computeBounds();
@@ -17,10 +16,10 @@ window.addEventListener('resize', () => {
 
 function computeBounds() {
   return {
-    left: padding,
-    top: padding,
-    width: app.clientWidth - padding * 2,
-    height: app.clientHeight - padding * 2,
+    left: 0,
+    top: 0,
+    width: app.clientWidth,
+    height: app.clientHeight,
   };
 }
 
@@ -42,7 +41,6 @@ export function initRecordDragging(recordWrapper) {
   const draggable = Draggable.create(recordWrapper, {
     type: 'x,y',
     bounds,
-    // allowNativeTouchScrolling: false, // Not needed?
 
     onPress() {
       clearDragFlags();
