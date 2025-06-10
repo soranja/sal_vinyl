@@ -13,7 +13,7 @@
       id="app"
       class="relative flex flex-col lg:flex-row w-full h-[var(--app-height)] max-h-[var(--app-height)] bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
     >
-      <div id="vignette" class="absolute inset-0 pointer-events-none bg-side-vingette z-1"></div>
+      <div id="vignette" class="hidden lg:block absolute inset-0 pointer-events-none bg-side-vingette z-1"></div>
       <div
         id="ready-area-background"
         class="absolute pointer-events-none bg-no-repeat bg-center bg-cover opacity-10 w-full h-full"
@@ -22,7 +22,7 @@
       <!-- INIT AREA -->
       <div
         id="init-area"
-        class="w-[100vw] h-[calc(var(--app-height)_*_0.1)] top-0 left-0 flex flex-row relative lg:w-[23vh] lg:h-[var(--app-height)] items-center justify-start z-50"
+        class="w-[100vw] h-[calc(var(--app-height)_*_0.15)] md:h-[calc(var(--app-height)_*_0.25)] top-0 left-0 flex flex-row relative lg:w-[23vh] lg:h-screen items-center justify-start z-50"
       >
         <div id="init-area-threshold" class="flex flex-col justify-center items-start w-full h-full">
           <div
@@ -69,7 +69,7 @@
             <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center lg:w-2/3 lg:px-[5vh]">
               <div
                 id="record-title"
-                class="hidden font-bold absolute ml-6 w-[350px] left-0 text-xl lg:static lg:text-4xl lg:w-auto lg:ml-0"
+                class="hidden font-bold absolute w-full left-0 text-3xl lg:static lg:text-4xl lg:w-auto ml-3 lg:ml-0"
               >
                 Title
               </div>
@@ -83,10 +83,13 @@
           <button id="play-button" class="p-3 bg-[#333] cursor-pointer flex items-center justify-center z-1">
             <img id="play-icon" src="/ui/play.svg" alt="play" class="w-6 h-6" />
           </button>
-          <div id="progress-n-volume-wrapper" class="flex flex-col items-start justify-center w-full">
+          <div
+            id="progress-n-volume-wrapper"
+            class="flex flex-col-reverse lg:flex-col items-start justify-between lg:justify-center w-full h-full lg:h-auto"
+          >
             <div
               id="progress-bar-wrapper"
-              class="w-full h-[calc(var(--app-height)*_0.02)] lg:h-[calc(var(--app-height)_*_0.012)] bg-[#555] relative overflow-hidden shadow-inners"
+              class="w-full h-[calc(var(--app-height)*_0.02)] lg:h-[calc(var(--app-height)_*_0.012)] bg-[#555] relative overflow-hidden shadow-inners mb-[1.5px] lg:mb-0"
             >
               <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-black w-0"></div>
               <div
@@ -101,7 +104,7 @@
               max="1"
               step="0.01"
               value="0.1"
-              class="w-[calc(var(--app-height)_*_0.1)] mt-4 bg-[#333] cursor-pointer z-1 hidden lg:block"
+              class="w-[calc(var(--app-height)_*_0.1)] lg:mt-4 bg-[#333] cursor-pointer z-1 hidden lg:block"
             />
           </div>
         </div>
