@@ -19,6 +19,7 @@
   --z-record-base: 10;
   --z-needle-base: 5;
   --z-needle-playing: 40;
+  --app-height: 100vh;
 }
 
 #play-icon {

@@ -11,7 +11,8 @@
   <body>
     <div
       id="app"
-      class="relative flex flex-col lg:flex-row w-full h-screen max-h-screen bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
+      class="relative flex flex-col lg:flex-row w-full bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
+      style="height: var(--app-height); max-height: var(--app-height)"
     >
       <div id="vignette" class="absolute inset-0 pointer-events-none bg-side-vingette z-1"></div>
       <div
@@ -55,7 +56,7 @@
                 id="needle"
                 src="/player/needle.png"
                 alt="needle"
-                class="relative w-auto h-[60vh] max-w-full select-none object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]"
+                class="relative w-auto h-[60vh] max-w-full select-none object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] hidden lg:block"
               />
             </div>
           </div>
@@ -95,7 +96,7 @@
               max="1"
               step="0.01"
               value="0.1"
-              class="w-[10vh] mt-4 bg-[#333] cursor-pointer z-1"
+              class="w-[10vh] mt-4 bg-[#333] cursor-pointer z-1 hidden lg:block"
             />
           </div>
         </div>
@@ -103,5 +104,14 @@
     </div>
 
     <script type="module" src="/src/main.js"></script>
+    <script>
+      function setAppHeight() {
+        const doc = document.documentElement;
+        doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+      }
+      window.addEventListener('resize', setAppHeight);
+      window.addEventListener('orientationchange', setAppHeight);
+      setAppHeight();
+    </script>
   </body>
 </html>
