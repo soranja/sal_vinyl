@@ -86,7 +86,7 @@
           <div id="progress-n-volume-wrapper" class="flex flex-col items-start justify-center w-full">
             <div
               id="progress-bar-wrapper"
-              class="w-full h-[calc(var(--app-height)_*_0.012)] bg-[#555] relative overflow-hidden shadow-inners"
+              class="w-full h-[calc(var(--app-height)*_0.02)] lg:h-[calc(var(--app-height)_*_0.012)] bg-[#555] relative overflow-hidden shadow-inners"
             >
               <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-black w-0"></div>
               <div
@@ -121,12 +121,13 @@
       window.addEventListener('orientationchange', setAppHeight);
 
       // Debounce resize to avoid layout jank from address bar toggling
-      let resizeTimeout;
+      let lastHeight = window.innerHeight;
       window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
+        const currentHeight = window.innerHeight;
+        if (Math.abs(currentHeight - lastHeight) > 100) {
           setAppHeight();
-        }, 500);
+          lastHeight = currentHeight;
+        }
       });
     </script>
   </body>

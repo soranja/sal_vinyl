@@ -15,6 +15,14 @@
   }
 }
 
+html,
+body {
+  overscroll-behavior: none;
+  touch-action: none;
+  height: 100%;
+  overflow: hidden;
+} // Prevent scrolling on mobile devices (pull-to-refresh)
+
 :root {
   /* --z-record-base: 10;
   --z-needle-base: 5;

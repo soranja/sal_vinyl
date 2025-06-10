@@ -3,6 +3,14 @@ import { createRecordList } from './recordList.js';
 import { updateStaticDots } from './debug';
 import { showWelcomeModal } from './modal.js';
 
+document.addEventListener(
+  'touchmove',
+  (e) => {
+    if (e.cancelable) e.preventDefault();
+  },
+  { passive: false },
+);
+
 document.addEventListener('DOMContentLoaded', () => {
   const recordListContainer = document.getElementById('record-list');
   const title = document.getElementById('record-title');

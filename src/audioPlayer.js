@@ -77,8 +77,13 @@ export function initAudioPlayer() {
     Draggable.create(pointer, {
       type: 'x',
       bounds: { minX: 0, maxX },
-      onPress: () => {
-        if (!isRecordReady()) return false;
+      allowEventDefault: false,
+      onPress(e) {
+        e.stopPropagation();
+        if (!isRecordReady()) {
+          e.preventDefault();
+          return false;
+        }
       },
       onDragStart: function () {
         if (!isRecordReady()) return false;
