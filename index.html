@@ -67,10 +67,7 @@
             class="lg:w-full lg:h-[calc(var(--app-height)_*_0.6)] lg:flex flex-col grow-0 items-start justify-start border-2 border-amber-300/0"
           >
             <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center lg:w-2/3 lg:px-[5vh]">
-              <div
-                id="record-title"
-                class="hidden font-bold absolute ml-6 w-[350px] left-0 text-xl lg:static lg:text-4xl lg:w-auto lg:ml-0"
-              >
+              <div id="record-title" class="hidden font-bold ml-6 w-[350px] text-xllg:text-4xl lg:w-auto lg:ml-0">
                 Title
               </div>
               <div id="record-description" class="hidden text-xs text-justify italic bg-black/50 p-8">Description</div>
@@ -112,11 +109,22 @@
     <script>
       function setAppHeight() {
         const doc = document.documentElement;
-        doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+        const height = window.innerHeight;
+        doc.style.setProperty('--app-height', `${height}px`);
       }
-      window.addEventListener('resize', setAppHeight);
+
+      // Only run once on load
+      window.addEventListener('DOMContentLoaded', setAppHeight);
       window.addEventListener('orientationchange', setAppHeight);
-      setAppHeight();
+
+      // Debounce resize to avoid layout jank from address bar toggling
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          setAppHeight();
+        }, 500);
+      });
     </script>
   </body>
 </html>
