@@ -59,8 +59,17 @@ export function initAudioPlayer() {
     volumeControl.value = volume.toFixed(2);
     const audio = getCurrentAudio();
     if (audio) audio.volume = volume;
-    const cent = Math.round(volume * 100) + '%';
-    volumeControl.style.setProperty('--volume-percent', cent);
+
+    const percent = Math.round(volume * 100);
+
+    // Apply standard CSS variable
+    volumeControl.style.setProperty('--volume-percent', `${percent}%`);
+
+    // SAFARI-SPECIFIC: Inline background fix
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isSafari) {
+      volumeControl.style.background = `linear-gradient(to right, #4caf50 ${percent}%, #111 ${percent}%)`;
+    }
   }
 
   setVolume(parseFloat(volumeControl.value) || 0);
