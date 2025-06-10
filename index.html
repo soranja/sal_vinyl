@@ -11,8 +11,7 @@
   <body>
     <div
       id="app"
-      class="relative flex flex-col lg:flex-row w-full bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
-      style="height: var(--app-height); max-height: var(--app-height)"
+      class="relative flex flex-col lg:flex-row w-full h-[var(--app-height)] max-h-[var(--app-height)] bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
     >
       <div id="vignette" class="absolute inset-0 pointer-events-none bg-side-vingette z-1"></div>
       <div
@@ -23,7 +22,7 @@
       <!-- INIT AREA -->
       <div
         id="init-area"
-        class="w-[100vw] h-[10%] top-0 left-0 flex flex-row relative lg:w-[23vh] lg:h-full items-center justify-start z-50"
+        class="w-[100vw] h-[calc(var(--app-height)_*_0.1)] top-0 left-0 flex flex-row relative lg:w-[23vh] lg:h-[var(--app-height)] items-center justify-start z-50"
       >
         <div id="init-area-threshold" class="flex flex-col justify-center items-start w-full h-full">
           <div
@@ -36,7 +35,10 @@
       </div>
 
       <!-- READY AREA -->
-      <div id="ready-area" class="relative flex flex-col justify-center items-end w-full h-[90%] lg:h-full">
+      <div
+        id="ready-area"
+        class="relative flex flex-col justify-center items-end w-full h-[calc(100%-10%)] lg:h-[var(--app-height)]"
+      >
         <div
           id="ready-area-threshold"
           class="flex flex-col lg:flex-row justify-center lg:justify-start items-center w-full lg:w-11/12 h-full"
@@ -48,7 +50,7 @@
                 id="player"
                 src="/player/player.png"
                 alt="player"
-                class="relative w-auto h-[60vh] max-w-full select-none object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
+                class="relative w-auto h-[calc(var(--app-height)_*_0.6)] max-w-full select-none object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
               />
             </div>
             <div id="needle-container">
@@ -56,13 +58,13 @@
                 id="needle"
                 src="/player/needle.png"
                 alt="needle"
-                class="relative w-auto h-[60vh] max-w-full select-none object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] hidden lg:block"
+                class="relative w-auto h-[calc(var(--app-height)_*_0.6)] max-w-full select-none object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] hidden lg:block"
               />
             </div>
           </div>
           <div
             id="record-info-wrapper"
-            class="lg:w-full lg:h-[60vh] lg:flex flex-col grow-0 items-start justify-start border-2 border-amber-300/0"
+            class="lg:w-full lg:h-[calc(var(--app-height)_*_0.6)] lg:flex flex-col grow-0 items-start justify-start border-2 border-amber-300/0"
           >
             <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center lg:w-2/3 lg:px-[5vh]">
               <div
@@ -82,7 +84,10 @@
             <img id="play-icon" src="/ui/play.svg" alt="play" class="w-6 h-6" />
           </button>
           <div id="progress-n-volume-wrapper" class="flex flex-col items-start justify-center w-full">
-            <div id="progress-bar-wrapper" class="w-full h-[12px] bg-[#555] relative overflow-hidden shadow-inners">
+            <div
+              id="progress-bar-wrapper"
+              class="w-full h-[calc(var(--app-height)_*_0.012)] bg-[#555] relative overflow-hidden shadow-inners"
+            >
               <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-black w-0"></div>
               <div
                 id="progress-bar-pointer"
@@ -96,7 +101,7 @@
               max="1"
               step="0.01"
               value="0.1"
-              class="w-[10vh] mt-4 bg-[#333] cursor-pointer z-1 hidden lg:block"
+              class="w-[calc(var(--app-height)_*_0.1)] mt-4 bg-[#333] cursor-pointer z-1 hidden lg:block"
             />
           </div>
         </div>

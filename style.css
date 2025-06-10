@@ -16,9 +16,9 @@
 }
 
 :root {
-  --z-record-base: 10;
+  /* --z-record-base: 10;
   --z-needle-base: 5;
-  --z-needle-playing: 40;
+  --z-needle-playing: 40; */
   --app-height: 100vh;
 }
 
@@ -30,7 +30,7 @@ input[type='range'] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width: 10vh;
+  width: calc(var(--app-height) * 0.1);
   cursor: pointer;
 
   background: linear-gradient(to right, #4caf50 var(--volume-percent, 0%), #111 var(--volume-percent, 0%));
