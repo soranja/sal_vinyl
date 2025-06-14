@@ -1,3 +1,6 @@
+import { showDragInstruction } from './instructions.js';
+import { getSnappedRecord } from './constants.js';
+
 const MODAL_STORAGE_KEY = 'welcomeModalShown';
 
 export function showWelcomeModal() {
@@ -26,11 +29,18 @@ export function showWelcomeModal() {
   modalBox.style.boxShadow = '0 0 30px rgba(0,0,0,0.6)';
   modalBox.style.textAlign = 'center';
   modalBox.innerHTML = `
-    <h2 class="text-2xl mb-4">Welcome to Soranja Records!</h2>
-    <p class="text-base mb-6 italic">This project includes a small collection of music just for testing purposes. </br> All rights belong to the artists and their labels.</p>
+    <div class="relative inline-block w-[100%] max-w-[200px] lg:max-w-[300px]" style="position: relative; display: inline-block; width: 100%; max-width: 300px;">
+      <video autoplay muted loop playsinline nocontrols
+        src="public/instructions/welcome.webm"
+        style="width: 100%; border-radius: 1rem; display: block;">
+      </video>
+    </div>
+    <p class="text-sm lg:text-base mb-2 mt-4 pointer-events-none max-w-xs lg:max-w-xl">This project includes a small collection of music just for testing purposes. </br> All rights belong to the artists and their labels.</p>
+    <p class="text-xs lg:text-sm italic mt-2 mb-6 text-gray-600 pointer-events-none">This is a one-time message.</p>
     <button id="welcome-modal-close" class="px-4 py-2 bg-yellow-500 text-black font-bold rounded hover:bg-yellow-400 transition cursor-pointer">
       Okay!
     </button>
+
   `;
 
   overlay.appendChild(modalBox);
@@ -39,5 +49,6 @@ export function showWelcomeModal() {
   document.getElementById('welcome-modal-close').addEventListener('click', () => {
     localStorage.setItem(MODAL_STORAGE_KEY, 'true');
     document.body.removeChild(overlay);
+    if (!getSnappedRecord()) showDragInstruction();
   });
 }

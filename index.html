@@ -37,11 +37,11 @@
       <!-- READY AREA -->
       <div
         id="ready-area"
-        class="relative flex flex-col justify-center items-end w-full h-[calc(100%-10%)] lg:h-[var(--app-height)]"
+        class="relative flex flex-col justify-center items-center lg:items-end w-full h-[calc(100%-10%)] lg:h-[var(--app-height)]"
       >
         <div
           id="ready-area-threshold"
-          class="flex flex-col lg:flex-row justify-center lg:justify-start items-center w-full lg:w-11/12 h-full"
+          class="flex flex-col lg:flex-row justify-center lg:justify-start items-center w-auto lg:w-11/12 h-full"
         >
           <!-- Vinyl Player -->
           <div id="player-wrapper" class="flex px-6 py-10 w-full">
@@ -64,16 +64,18 @@
           </div>
           <div
             id="record-info-wrapper"
-            class="lg:w-full lg:h-[calc(var(--app-height)_*_0.6)] lg:flex flex-col grow-0 items-start justify-start border-2 border-amber-300/0"
+            class="lg:w-full lg:h-[calc(var(--app-height)_*_0.6)] lg:flex flex-col grow-0 items-start justify-center"
           >
-            <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center lg:w-2/3 lg:px-[5vh]">
+            <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center">
               <div
                 id="record-title"
                 class="hidden font-bold absolute w-full left-0 text-3xl lg:static lg:text-4xl lg:w-auto ml-3 lg:ml-0"
               >
-                Title
+                ...
               </div>
-              <div id="record-description" class="hidden text-xs text-justify italic bg-black/50 p-8">Description</div>
+              <div id="record-description" class="hidden text-base text-justify italic bg-black/50 p-8 lg:w-2/3">
+                ...
+              </div>
             </div>
           </div>
         </div>

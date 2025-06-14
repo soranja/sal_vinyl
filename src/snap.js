@@ -15,6 +15,7 @@ import {
   readyPos,
   records,
 } from './constants';
+import { showDragInstruction, hideDragInstruction, updatePlayerWrapperOpacity } from './instructions.js';
 
 // gsap.registerPlugin();
 
@@ -66,6 +67,8 @@ function unsnapToInit(record, meta) {
   clearSnappedRecord();
   setRecordReady(false);
   fadeOutRecordInfo();
+  showDragInstruction();
+  updatePlayerWrapperOpacity();
 }
 
 export function initProximitySnap(record, audio) {
@@ -133,6 +136,8 @@ export function initProximitySnap(record, audio) {
         setCurrentRecord(record);
         setRecordReady(true);
         fadeInRecordInfo(meta);
+        hideDragInstruction();
+        updatePlayerWrapperOpacity();
 
         snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
 
