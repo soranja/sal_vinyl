@@ -20,7 +20,7 @@ export function showDragInstruction() {
       // Create video
       wrapper.innerHTML += `
         <video
-          src="public/instructions/drag.webm"
+          src="/instructions/drag.webm"
           autoplay
           loop
           muted

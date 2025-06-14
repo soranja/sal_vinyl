@@ -31,7 +31,7 @@ export function showWelcomeModal() {
   modalBox.innerHTML = `
     <div class="relative inline-block w-[100%] max-w-[200px] lg:max-w-[300px]" style="position: relative; display: inline-block; width: 100%; max-width: 300px;">
       <video autoplay muted loop playsinline nocontrols
-        src="public/instructions/welcome.webm"
+        src="/instructions/welcome.webm"
         style="width: 100%; border-radius: 1rem; display: block;">
       </video>
     </div>
