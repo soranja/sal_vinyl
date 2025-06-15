@@ -3,11 +3,26 @@ import { getSnappedRecord, getCurrentDraggedRecord } from './constants';
 
 let instructionVideo = null;
 
+export function isSafariWithHEVCAlphaSupport() {
+  const ua = navigator.userAgent;
+  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+  const isMac = /Macintosh/.test(ua);
+  const isIOS = /iPad|iPhone|iPod/.test(ua);
+  const isApple = isMac || isIOS;
+
+  const safariMatch = ua.match(/Version\/(\d+)/);
+  const safariVersion = safariMatch ? parseInt(safariMatch[1], 10) : 0;
+
+  return isSafari && isApple && safariVersion >= 13;
+}
+
 export function showDragInstruction() {
   const wrapper = document.getElementById('record-info-wrapper');
   const title = document.getElementById('record-title');
   const desc = document.getElementById('record-description');
   if (!wrapper || instructionVideo) return;
+
+  const videoSrc = isSafariWithHEVCAlphaSupport() ? '/instructions/drag-hevc.mov' : '/instructions/drag.webm';
 
   // Fade out title and description
   gsap.to([title, desc], {
@@ -20,7 +35,7 @@ export function showDragInstruction() {
       // Create video
       wrapper.innerHTML += `
         <video
-          src="/instructions/drag.webm"
+          src="${videoSrc}"
           autoplay
           loop
           muted

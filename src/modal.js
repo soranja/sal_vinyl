@@ -1,10 +1,14 @@
-import { showDragInstruction } from './instructions.js';
+import { showDragInstruction, isSafariWithHEVCAlphaSupport } from './instructions.js';
 import { getSnappedRecord } from './constants.js';
 
 const MODAL_STORAGE_KEY = 'welcomeModalShown';
 
 export function showWelcomeModal() {
   if (localStorage.getItem(MODAL_STORAGE_KEY)) return;
+
+  const welcomeVideoSrc = isSafariWithHEVCAlphaSupport()
+    ? '/instructions/welcome-hevc.mov'
+    : '/instructions/welcome.webm';
 
   const overlay = document.createElement('div');
   overlay.id = 'welcome-modal-overlay';
@@ -31,7 +35,7 @@ export function showWelcomeModal() {
   modalBox.innerHTML = `
     <div class="relative inline-block w-[100%] max-w-[200px] lg:max-w-[300px]" style="position: relative; display: inline-block; width: 100%; max-width: 300px;">
       <video autoplay muted loop playsinline nocontrols
-        src="/instructions/welcome.webm"
+        src="${welcomeVideoSrc}"
         style="width: 100%; border-radius: 1rem; display: block;">
       </video>
     </div>
