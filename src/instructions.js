@@ -6,14 +6,44 @@ let instructionVideo = null;
 export function isSafariWithHEVCAlphaSupport() {
   const ua = navigator.userAgent;
 
-  const isSafari = /Safari/.test(ua) && !/Chrome|CriOS|FxiOS|EdgiOS|Edge/.test(ua);
   const isApple = /Macintosh|iPhone|iPad|iPod/.test(ua);
 
-  // Match Safari version: works on iOS + macOS
+  // Detect real Safari, exclude Chrome, Firefox, Edge, etc.
+  const isRealSafari =
+    ua.includes('Safari') &&
+    !ua.includes('Chrome') &&
+    !ua.includes('CriOS') &&
+    !ua.includes('FxiOS') &&
+    !ua.includes('EdgiOS') &&
+    !ua.includes('OPiOS') &&
+    !ua.includes('SamsungBrowser');
+
+  // Extract Safari version (if available)
   const safariMatch = ua.match(/Version\/(\d+)\./);
   const safariVersion = safariMatch ? parseInt(safariMatch[1], 10) : 0;
 
-  return isSafari && isApple && safariVersion >= 13;
+  const supported = isRealSafari && isApple && safariVersion >= 13;
+
+  // Console and UI debug
+  console.log(`[HEVC Alpha Detection]
+  ua: ${ua}
+  isRealSafari: ${isRealSafari}
+  isAppleDevice: ${isApple}
+  safariVersion: ${safariVersion}
+  HEVC alpha supported: ${supported}
+  `);
+
+  const debugDiv = document.createElement('div');
+  debugDiv.textContent = `[HEVC Detect] ${supported ? '✅ Supported' : '❌ Not Supported'} | UA: ${ua}`;
+  debugDiv.style.cssText = `
+    position: fixed; bottom: 0; left: 0;
+    background: rgba(0,0,0,0.85); color: white;
+    font-size: 10px; padding: 5px 8px; z-index: 99999;
+    max-width: 100vw; overflow: hidden; white-space: nowrap;
+  `;
+  document.body.appendChild(debugDiv);
+
+  return supported;
 }
 
 export function showDragInstruction() {
