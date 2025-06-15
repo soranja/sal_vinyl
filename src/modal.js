@@ -7,7 +7,7 @@ export function showWelcomeModal() {
   if (localStorage.getItem(MODAL_STORAGE_KEY)) return;
 
   const welcomeVideoSrc = isSafariWithHEVCAlphaSupport()
-    ? '/instructions/welcome-hevc.mov'
+    ? '/instructions/welcome-ios.mov'
     : '/instructions/welcome.webm';
 
   const overlay = document.createElement('div');

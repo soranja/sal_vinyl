@@ -5,12 +5,12 @@ let instructionVideo = null;
 
 export function isSafariWithHEVCAlphaSupport() {
   const ua = navigator.userAgent;
-  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
-  const isMac = /Macintosh/.test(ua);
-  const isIOS = /iPad|iPhone|iPod/.test(ua);
-  const isApple = isMac || isIOS;
 
-  const safariMatch = ua.match(/Version\/(\d+)/);
+  const isSafari = /Safari/.test(ua) && !/Chrome|CriOS|FxiOS|EdgiOS|Edge/.test(ua);
+  const isApple = /Macintosh|iPhone|iPad|iPod/.test(ua);
+
+  // Match Safari version: works on iOS + macOS
+  const safariMatch = ua.match(/Version\/(\d+)\./);
   const safariVersion = safariMatch ? parseInt(safariMatch[1], 10) : 0;
 
   return isSafari && isApple && safariVersion >= 13;
@@ -22,7 +22,7 @@ export function showDragInstruction() {
   const desc = document.getElementById('record-description');
   if (!wrapper || instructionVideo) return;
 
-  const videoSrc = isSafariWithHEVCAlphaSupport() ? '/instructions/drag-hevc.mov' : '/instructions/drag.webm';
+  const videoSrc = isSafariWithHEVCAlphaSupport() ? '/instructions/drag-ios.mov' : '/instructions/drag.webm';
 
   // Fade out title and description
   gsap.to([title, desc], {
