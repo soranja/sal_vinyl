@@ -23,6 +23,12 @@ body {
   overflow: hidden;
 } // Prevent scrolling on mobile devices (pull-to-refresh)
 
+video {
+  background-color: transparent;
+  mix-blend-mode: normal;
+  isolation: isolate;
+}
+
 :root {
   /* --z-record-base: 10;
   --z-needle-base: 5;

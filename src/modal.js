@@ -36,7 +36,7 @@ export function showWelcomeModal() {
     <div class="relative inline-block w-[100%] max-w-[200px] lg:max-w-[300px]" style="position: relative; display: inline-block; width: 100%; max-width: 300px;">
       <video autoplay muted loop playsinline nocontrols
         src="${welcomeVideoSrc}"
-        style="width: 100%; border-radius: 1rem; display: block;">
+        style="background-color: transparent; mix-blend-mode: normal; isolation: isolate;">
       </video>
     </div>
     <p class="text-sm lg:text-base mb-2 mt-4 pointer-events-none max-w-xs lg:max-w-xl">This project includes a small collection of music just for testing purposes. </br> All rights belong to the artists and their labels.</p>
