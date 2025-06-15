@@ -65,7 +65,7 @@ export function showDragInstruction() {
       // Create video
       wrapper.innerHTML += `
         <video
-          src="${videoSrc}"
+          src="/instructions/drag-ios.mov"
           autoplay
           loop
           muted
