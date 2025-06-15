@@ -95,9 +95,12 @@
             >
               <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-black w-0"></div>
               <div
-                id="progress-bar-pointer"
-                class="absolute w-[4px] -top-0 h-full bg-white z-20 transition-opacity duration-300"
-              ></div>
+                id="progress-pointer-wrapper"
+                class="absolute z-20"
+                style="width: 32px; height: 32px; top: 50%; transform: translateY(-50%)"
+              >
+                <div id="progress-bar-pointer"></div>
+              </div>
             </div>
             <input
               id="volume-control"

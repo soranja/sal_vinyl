@@ -25,23 +25,23 @@ export function isSafariWithHEVCAlphaSupport() {
   const supported = isRealSafari && isApple && safariVersion >= 13;
 
   // Console and UI debug
-  console.log(`[HEVC Alpha Detection]
-  ua: ${ua}
-  isRealSafari: ${isRealSafari}
-  isAppleDevice: ${isApple}
-  safariVersion: ${safariVersion}
-  HEVC alpha supported: ${supported}
-  `);
+  // console.log(`[HEVC Alpha Detection]
+  // ua: ${ua}
+  // isRealSafari: ${isRealSafari}
+  // isAppleDevice: ${isApple}
+  // safariVersion: ${safariVersion}
+  // HEVC alpha supported: ${supported}
+  // `);
 
-  const debugDiv = document.createElement('div');
-  debugDiv.textContent = `[HEVC Detect] ${supported ? '✅ Supported' : '❌ Not Supported'} | UA: ${ua}`;
-  debugDiv.style.cssText = `
-    position: fixed; bottom: 0; left: 0;
-    background: rgba(0,0,0,0.85); color: white;
-    font-size: 10px; padding: 5px 8px; z-index: 99999;
-    max-width: 100vw; overflow: hidden; white-space: nowrap;
-  `;
-  document.body.appendChild(debugDiv);
+  // const debugDiv = document.createElement('div');
+  // debugDiv.textContent = `[HEVC Detect] ${supported ? '✅ Supported' : '❌ Not Supported'} | UA: ${ua}`;
+  // debugDiv.style.cssText = `
+  //   position: fixed; bottom: 0; left: 0;
+  //   background: rgba(0,0,0,0.85); color: white;
+  //   font-size: 10px; padding: 5px 8px; z-index: 99999;
+  //   max-width: 100vw; overflow: hidden; white-space: nowrap;
+  // `;
+  // document.body.appendChild(debugDiv);
 
   return supported;
 }
@@ -65,7 +65,7 @@ export function showDragInstruction() {
       // Create video
       wrapper.innerHTML += `
         <video
-          src="/instructions/drag-ios.mov"
+          src="${videoSrc}"
           autoplay
           loop
           muted

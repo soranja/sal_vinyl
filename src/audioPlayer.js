@@ -21,13 +21,15 @@ export function initAudioPlayer() {
   const barWrapper = document.getElementById('progress-bar-wrapper');
   const barFill = document.getElementById('progress-bar-fill');
   const pointer = document.getElementById('progress-bar-pointer');
+  const pointerWrapper = document.getElementById('progress-pointer-wrapper');
   const volumeControl = document.getElementById('volume-control');
 
   // Updates PROGRESS BAR POINTER visibility
   function updatePointerState() {
-    pointer.style.visibility = isRecordReady() ? 'visible' : 'hidden';
-    pointer.style.opacity = isRecordReady() ? '1' : '0';
-    pointer.style.cursor = isRecordReady() ? 'pointer' : 'default';
+    const visible = isRecordReady();
+    pointerWrapper.style.visibility = visible ? 'visible' : 'hidden';
+    pointerWrapper.style.opacity = visible ? '1' : '0';
+    pointerWrapper.style.cursor = visible ? 'pointer' : 'default';
   }
 
   // Updates PROGRESS BAR fill and ITS POINTER POS according to the audio
@@ -37,11 +39,11 @@ export function initAudioPlayer() {
 
     const ratio = audio.currentTime / audio.duration;
     const barWidth = barWrapper.offsetWidth;
-    const maxX = barWidth - pointer.offsetWidth;
+    const maxX = barWidth - pointerWrapper.offsetWidth;
     const newX = ratio * maxX;
 
     gsap.set(barFill, { width: newX });
-    gsap.set(pointer, { x: newX });
+    gsap.set(pointerWrapper, { x: newX });
 
     updatePointerState();
     if (!audio.paused) requestAnimationFrame(updateProgressBar);
@@ -50,7 +52,7 @@ export function initAudioPlayer() {
   // Resets PROGRESS BAR fill and ITS POINTER POS
   function resetProgressBar() {
     gsap.set(barFill, { width: 0 });
-    gsap.set(pointer, { x: 0 });
+    gsap.set(pointerWrapper, { x: 0 });
   }
 
   // Controls and visualises VOLUME BAR
@@ -72,9 +74,9 @@ export function initAudioPlayer() {
   // Updates PROGRESS BAR DRAG (By Frame)
   requestAnimationFrame(() => {
     const barWidth = barWrapper.offsetWidth;
-    const maxX = barWidth - pointer.offsetWidth;
+    const maxX = barWidth - pointerWrapper.offsetWidth;
 
-    Draggable.create(pointer, {
+    Draggable.create(pointerWrapper, {
       type: 'x',
       bounds: { minX: 0, maxX },
       allowEventDefault: false,
@@ -178,7 +180,6 @@ export function initAudioPlayer() {
           currentAudio.addEventListener(
             'ended',
             () => {
-              // Draggable.get(currentRecord)?.enable();
               enableAllDraggables();
               needle.style.zIndex = 5;
               getRecordSpin()?.pause();
@@ -224,16 +225,6 @@ export function initAudioPlayer() {
     updatePointerState();
   });
 
-  // Natural play? Unnecesary?
-  // document.addEventListener(
-  //   'play',
-  //   () => {
-  //     const currentAudio = getCurrentAudio();
-  //     if (currentAudio) updateProgressBar();
-  //   },
-  //   true,
-  // );
-
   // KEY CONTROLS
   document.addEventListener('keydown', (e) => {
     const audio = getCurrentAudio();
@@ -260,24 +251,24 @@ export function initAudioPlayer() {
         e.preventDefault();
         audio.currentTime = Math.max(0, audio.currentTime - 5);
         // Works but stacks with the recordSpin rotation and resets on the end / pause is broken
-        // gsap.to(record, {
-        //   rotation: '-=10',
-        //   duration: 0,
-        //   ease: 'power2.out',
-        // });
+        gsap.to(record, {
+          rotation: '-=10',
+          duration: 0,
+          ease: 'power2.out',
+        });
         updateProgressBar();
         break;
 
       case 'ArrowRight':
         e.preventDefault();
         audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
-        // gsap.to(record, {
-        //   rotation: '+=10',
-        //   duration: 0,
-        //   ease: 'power2.out',
-        // });
+        gsap.to(record, {
+          rotation: '+=10',
+          duration: 0,
+          ease: 'power2.out',
+        });
         updateProgressBar();
         break;
     }
   });
-} // Rotation not working, needle brakes on arrow keys wind
+}
