@@ -67,15 +67,8 @@
             class="lg:w-full lg:h-[calc(var(--app-height)_*_0.6)] lg:flex flex-col grow-0 items-start justify-center"
           >
             <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center">
-              <div
-                id="record-title"
-                class="hidden font-bold absolute w-full left-0 text-3xl lg:static lg:text-4xl lg:w-auto ml-3 lg:ml-0"
-              >
-                ...
-              </div>
-              <div id="record-description" class="hidden text-base text-justify italic bg-black/50 p-8 lg:w-2/3">
-                ...
-              </div>
+              <div id="record-title-lg" class="hidden font-bold lg:block text-4xl text-white ml-0"></div>
+              <div id="record-description" class="hidden text-base text-justify italic bg-black/50 p-8 lg:w-2/3"></div>
             </div>
           </div>
         </div>
@@ -91,12 +84,12 @@
           >
             <div
               id="progress-bar-wrapper"
-              class="w-full h-[calc(var(--app-height)*_0.021)] lg:h-[calc(var(--app-height)_*_0.013)] bg-[#555] relative overflow-hidden shadow-inners mb-[1.5px] lg:mb-0"
+              class="w-full h-[calc(var(--app-height)*_0.019)] lg:h-[calc(var(--app-height)_*_0.013)] bg-[#555] relative overflow-hidden shadow-inners mb-[1.5px] lg:mb-0"
             >
               <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-black w-0"></div>
               <div
                 id="progress-pointer-wrapper"
-                class="absolute w-[20px] h-[20px] lg:w-[12px] lg:h-[12px] top-1/2 -translate-x-1/4 -translate-y-1/2 z-20 flex items-center justify-center"
+                class="absolute w-[17px] h-[17px] lg:w-[12px] lg:h-[12px] top-1/2 -translate-x-1/5 lg:-translate-x-1/4 -translate-y-1/2 z-20 flex items-center justify-center"
               >
                 <div
                   id="progress-bar-pointer"
@@ -113,6 +106,7 @@
               value="0.1"
               class="w-[calc(var(--app-height)_*_0.1)] lg:mt-4 bg-[#333] cursor-pointer z-1 hidden lg:block"
             />
+            <div id="record-title" class="font-bold text-base text-[#333] block pointer-events-none lg:hidden">...</div>
           </div>
         </div>
       </div>

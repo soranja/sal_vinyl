@@ -31,53 +31,58 @@ export function createRecordSpin(record) {
 }
 
 export function fadeInRecordInfo(meta) {
-  const titleEl = document.getElementById('record-title');
-  const descEl = document.getElementById('record-description');
+  const title = document.getElementById('record-title');
+  const titleLg = document.getElementById('record-title-lg');
+  const desc = document.getElementById('record-description');
   const bgElem = document.getElementById('ready-area-background');
-  if (!titleEl || !descEl || !bgElem) return;
+
+  if (!title || !titleLg || !desc || !bgElem) return;
 
   const isLargeScreen = window.innerWidth >= 1024;
 
-  // Prepare: hide the texts, reset opacities
-  titleEl.classList.add('hidden');
-  descEl.classList.add('hidden');
-  gsap.set([titleEl, descEl, bgElem], { opacity: 0 });
+  // Hide and reset
+  [title, titleLg, desc].forEach((el) => {
+    el.classList.add('hidden');
+    gsap.set(el, { opacity: 0 });
+  });
+  gsap.set(bgElem, { opacity: 0 });
 
   const tl = gsap.timeline();
-  // 1) fade‐out old BG
   tl.to(bgElem, { opacity: 0, duration: 0.5 })
-
-    // 2) swap in new text + background image
     .add(() => {
-      titleEl.textContent = meta.title;
-      descEl.textContent = meta.description;
+      title.textContent = meta.title;
+      titleLg.textContent = meta.title;
+      desc.textContent = meta.description;
       bgElem.style.backgroundImage = `url(${meta.background})`;
     })
-
-    // 3) fade‐in BG, then reveal + fade‐in text
-    .to(bgElem, { opacity: 0.2, duration: 0.5 }, '>')
-
-    .to(
-      [titleEl],
-      {
-        opacity: 1,
-        duration: 0.5,
-        onStart: () => {
-          titleEl.classList.remove('hidden');
-        },
-      },
-      '<',
-    );
+    .to(bgElem, { opacity: 0.2, duration: 0.5 }, '>');
 
   if (isLargeScreen) {
     tl.to(
-      [descEl],
+      titleLg,
       {
         opacity: 1,
         duration: 0.5,
-        onStart: () => {
-          descEl.classList.remove('hidden');
-        },
+        onStart: () => titleLg.classList.remove('hidden'),
+      },
+      '<',
+    );
+    tl.to(
+      desc,
+      {
+        opacity: 1,
+        duration: 0.5,
+        onStart: () => desc.classList.remove('hidden'),
+      },
+      '<',
+    );
+  } else {
+    tl.to(
+      title,
+      {
+        opacity: 1,
+        duration: 0.5,
+        onStart: () => title.classList.remove('hidden'),
       },
       '<',
     );
@@ -85,21 +90,21 @@ export function fadeInRecordInfo(meta) {
 }
 
 export function fadeOutRecordInfo() {
-  const titleEl = document.getElementById('record-title');
-  const descEl = document.getElementById('record-description');
+  const title = document.getElementById('record-title');
+  const desc = document.getElementById('record-description');
   const bgElem = document.getElementById('ready-area-background');
-  if (!titleEl || !descEl || !bgElem) return;
+  if (!title || !desc || !bgElem) return;
 
   // fade everything out
-  gsap.to([bgElem, titleEl, descEl], {
+  gsap.to([bgElem, title, desc], {
     opacity: 0,
     duration: 0.5,
     onComplete: () => {
       // then clear + hide text again
-      titleEl.classList.add('hidden');
-      descEl.classList.add('hidden');
-      titleEl.textContent = '';
-      descEl.textContent = '';
+      title.classList.add('hidden');
+      desc.classList.add('hidden');
+      title.textContent = '';
+      desc.textContent = '';
       // clear BG override so default CSS tiling shows
       bgElem.style.backgroundImage = '';
     },

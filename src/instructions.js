@@ -49,7 +49,7 @@ export function showDragInstruction() {
           loop
           muted
           playsinline
-          class="max-w-[500px] w-full opacity-0 transition-opacity duration-300 ease-in fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:left-auto lg:top-auto lg:translate-x-0 lg:translate-y-0 z-[100]"
+          class="max-w-[500px] w-full opacity-0 transition-opacity duration-300 ease-in fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:left-auto lg:top-auto lg:translate-x-0 lg:translate-y-0"
           style="background-color: transparent; mix-blend-mode: normal; isolation: isolate;"
         ></video>
       `;
