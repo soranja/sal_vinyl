@@ -41,10 +41,10 @@
       >
         <div
           id="ready-area-threshold"
-          class="flex flex-col lg:flex-row justify-center lg:justify-start items-center w-auto lg:w-11/12 h-full"
+          class="flex flex-col lg:flex-row justify-center lg:justify-start items-center w-auto lg:w-11/12 h-full gap-x-4"
         >
           <!-- Vinyl Player -->
-          <div id="player-wrapper" class="flex px-6 py-10 w-full">
+          <div id="player-wrapper" class="flex">
             <div id="player-container">
               <img
                 id="player"
@@ -64,17 +64,17 @@
           </div>
           <div
             id="record-info-wrapper"
-            class="lg:w-full lg:h-[calc(var(--app-height)_*_0.6)] lg:flex flex-col grow-0 items-start justify-center"
+            class="lg:w-full lg:h-[calc(var(--app-height)_*_0.6)] lg:flex flex-col grow-0 items-start justify-center max-w-xl"
           >
             <div id="record-info" class="flex flex-col gap-y-8 items-start justify-center">
-              <div id="record-title-lg" class="hidden font-bold lg:block text-4xl text-white ml-0"></div>
+              <div id="record-title-lg" class="hidden font-bold text-4xl text-white"></div>
               <div id="record-description" class="hidden text-base text-justify italic bg-black/50 p-8 lg:w-2/3"></div>
             </div>
           </div>
         </div>
 
         <!-- Player Controls -->
-        <div id="player-ui" class="flex justify-center items-start gap-x-4 bg-yellow-500 p-6 w-full">
+        <div id="player-ui" class="flex justify-center items-start gap-x-4 bg-yellow-500 pb-8 p-6 w-full">
           <button id="play-button" class="p-3 bg-[#333] cursor-pointer flex items-center justify-center z-1">
             <img id="play-icon" src="/ui/play.svg" alt="play" class="w-6 h-6" />
           </button>
@@ -106,7 +106,9 @@
               value="0.1"
               class="w-[calc(var(--app-height)_*_0.1)] lg:mt-4 bg-[#333] cursor-pointer z-1 hidden lg:block"
             />
-            <div id="record-title" class="font-bold text-base text-[#333] block pointer-events-none lg:hidden">...</div>
+            <div id="record-title-wrapper" class="relative overflow-hidden h-6 w-full lg:hidden">
+              <div id="record-title" class="absolute whitespace-nowrap font-bold text-xl text-[#222]"></div>
+            </div>
           </div>
         </div>
       </div>

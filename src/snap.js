@@ -135,8 +135,8 @@ export function initProximitySnap(record, audio) {
         setCurrentAudio(audio);
         setCurrentRecord(record);
         setRecordReady(true);
-        fadeInRecordInfo(meta);
         hideDragInstruction();
+        fadeInRecordInfo(meta);
         updatePlayerWrapperOpacity();
 
         snapTween(record, readyPos, { scaleUp: true, playerSnap: true });

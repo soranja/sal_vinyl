@@ -15,6 +15,12 @@
   }
 }
 
+/* #record-title {
+  transition: transform 4s linear;
+  white-space: nowrap;
+  will-change: transform;
+} */
+
 html,
 body {
   overscroll-behavior: none;
@@ -23,11 +29,11 @@ body {
   overflow: hidden;
 } // Prevent scrolling on mobile devices (pull-to-refresh)
 
-video {
+/* video {
   background-color: transparent;
   mix-blend-mode: normal;
   isolation: isolate;
-}
+} */
 
 :root {
   /* --z-record-base: 10;

@@ -28,6 +28,7 @@ export function isSafariWithHEVCAlphaSupport() {
 export function showDragInstruction() {
   const wrapper = document.getElementById('record-info-wrapper');
   const title = document.getElementById('record-title');
+  const titleLg = document.getElementById('record-title-lg');
   const desc = document.getElementById('record-description');
   if (!wrapper || instructionVideo) return;
 
@@ -36,9 +37,10 @@ export function showDragInstruction() {
   // Fade out title and description
   gsap.to([title, desc], {
     opacity: 0,
-    duration: 0.3,
+    duration: 0.5,
     onComplete: () => {
       title.classList.add('hidden');
+      titleLg.classList.add('hidden');
       desc.classList.add('hidden');
 
       // Create video

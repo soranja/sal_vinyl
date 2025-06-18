@@ -49,9 +49,9 @@ export function initRecordDragging(recordWrapper) {
       meta.readyDragged = meta.isInReadyArea;
       setCurrentDraggedRecord(this.target);
 
-      // Sets a init dragged record to scale x1.5 for visual distinction
+      // Scales up an init dragged record for visual distinction
       if (getSnappedRecord() !== this.target) {
-        gsap.to(this.target, { scale: 1.5, duration: 0.3, ease: 'power2.out' });
+        gsap.to(this.target, { scale: 1.2, duration: 0.3, ease: 'power2.out' });
       }
     },
 
@@ -69,7 +69,7 @@ export function initRecordDragging(recordWrapper) {
       gsap.killTweensOf(this.target);
       gsap.set(this.target, { x: this.x, y: this.y });
 
-      // Sets the init dragged record back to scale x1 if stayed in init area
+      // Scales down the init dragged record if stayed in init area
       if (getSnappedRecord() !== this.target) {
         gsap.to(this.target, { scale: 1, duration: 0.4, ease: 'power2.out' });
       }
