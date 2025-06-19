@@ -34,6 +34,9 @@ export function fadeInRecordInfo(meta) {
   const wrapper = document.getElementById('record-title-wrapper');
   if (!title || !titleLg || !desc || !bgElem || !wrapper) return;
 
+  gsap.killTweensOf([title, titleLg, desc, bgElem]);
+  stopMarquee(title);
+
   const isLarge = window.innerWidth >= 1024;
   [title, titleLg, desc].forEach((el) => {
     el.classList.add('hidden');

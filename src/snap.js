@@ -47,7 +47,7 @@ function unsnapToInit(record, meta) {
   const progressBarFill = document.getElementById('progress-bar-fill');
   const progressBarPointer = document.getElementById('progress-bar-pointer');
 
-  // Conflicts with rotationSpin?
+  // Reset rotations
   gsap.to(vinylWrapper, { rotation: 0, duration: 0.4, ease: 'power2.out' });
   gsap.to(record, { rotation: 0, duration: 0.4, ease: 'power2.out' });
 
@@ -55,14 +55,11 @@ function unsnapToInit(record, meta) {
     audio.pause();
     audio.currentTime = 0;
   }
+
   if (progressBarFill && progressBarPointer) {
     gsap.set(progressBarFill, { width: 0 });
     gsap.set(progressBarPointer, { x: 0 });
   }
-
-  // getRecordSpin()?.pause().kill();
-  // setRecordSpin(null);
-  // ??
 
   clearSnappedRecord();
   setRecordReady(false);

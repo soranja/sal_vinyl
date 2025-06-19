@@ -15,31 +15,17 @@
   }
 }
 
-/* #record-title {
-  transition: transform 4s linear;
-  white-space: nowrap;
-  will-change: transform;
-} */
-
+// Prevent scrolling on mobile devices (pull-to-refresh)
 html,
 body {
   overscroll-behavior: none;
   touch-action: none;
   height: 100%;
   overflow: hidden;
-} // Prevent scrolling on mobile devices (pull-to-refresh)
-
-/* video {
-  background-color: transparent;
-  mix-blend-mode: normal;
-  isolation: isolate;
-} */
+}
 
 :root {
-  /* --z-record-base: 10;
-  --z-needle-base: 5;
-  --z-needle-playing: 40; */
-  --app-height: 100vh;
+  --app-height: calc(100vh + env(safe-area-inset-top));
 }
 
 #play-icon {
