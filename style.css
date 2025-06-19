@@ -27,12 +27,6 @@ body {
   min-height: 100vh;
 }
 
-@supports (padding: max(0px)) {
-  .island-safe-area {
-    padding-top: max(env(safe-area-inset-top), 20px);
-  }
-}
-
 :root {
   --app-height: calc(100vh + env(safe-area-inset-top));
 }
@@ -84,16 +78,4 @@ input[type='range']::-moz-range-thumb {
   height: 12px;
   border: solid 2px #000;
   border-radius: 0;
-}
-
-.island-safe-area {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding-top: constant(safe-area-inset-top);
-  padding-top: env(safe-area-inset-top);
-  background-color: #facc15;
-  z-index: 9999;
-  pointer-events: none;
 }
