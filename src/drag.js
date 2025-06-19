@@ -69,9 +69,11 @@ export function initRecordDragging(recordWrapper) {
       gsap.killTweensOf(this.target);
       gsap.set(this.target, { x: this.x, y: this.y });
 
-      // Scales down the init dragged record if stayed in init area
-      if (getSnappedRecord() !== this.target) {
-        gsap.to(this.target, { scale: 1, duration: 0.4, ease: 'power2.out' });
+      const meta = metaOf(this.target);
+      const snapped = getSnappedRecord();
+
+      if (meta.isInInitArea && snapped !== this.target) {
+        this.target.style.zIndex = this.target.dataset.initZ;
       }
     },
   })[0];

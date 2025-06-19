@@ -37,6 +37,8 @@ function snapTween(record, target, opts = {}) {
 
 function unsnapToInit(record, meta) {
   snapTween(record, meta.initPos, { resetZ: true });
+  // Reset the record's z-index to its initial value
+  record.style.zIndex = record.dataset.initZ;
 
   meta.readySnapped = false;
   meta.initSnapped = true;
@@ -47,7 +49,6 @@ function unsnapToInit(record, meta) {
   const progressBarFill = document.getElementById('progress-bar-fill');
   const progressBarPointer = document.getElementById('progress-bar-pointer');
 
-  // Reset rotations
   gsap.to(vinylWrapper, { rotation: 0, duration: 0.4, ease: 'power2.out' });
   gsap.to(record, { rotation: 0, duration: 0.4, ease: 'power2.out' });
 

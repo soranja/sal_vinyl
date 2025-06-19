@@ -27,9 +27,11 @@ export function initAudioPlayer() {
   // Updates PROGRESS BAR POINTER visibility
   function updatePointerState() {
     const visible = isRecordReady();
-    pointerWrapper.style.visibility = visible ? 'visible' : 'hidden';
-    pointerWrapper.style.opacity = visible ? '1' : '0';
-    pointerWrapper.style.cursor = visible ? 'pointer' : 'default';
+    const audio = getCurrentAudio();
+    pointerWrapper.style.visibility = 'visible';
+    // !visible && audio.currentTime === 0;
+    // pointerWrapper.style.opacity = visible ? '1' : '0';
+    // pointerWrapper.style.cursor = visible ? 'pointer' : 'default';
   }
 
   // Updates PROGRESS BAR fill and ITS POINTER POS according to the audio

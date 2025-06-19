@@ -101,11 +101,10 @@ export function updatePlayerWrapperOpacity() {
   const playerWrapper = document.getElementById('player-wrapper');
   if (!playerWrapper) return;
 
-  const isSmallScreen = window.innerWidth < 1024;
   const hasNoSnapped = !getSnappedRecord();
   const isNotDragging = !getCurrentDraggedRecord();
 
-  if (isSmallScreen && hasNoSnapped && isNotDragging) {
+  if (hasNoSnapped && isNotDragging) {
     gsap.to(playerWrapper, { opacity: 0.5, duration: 0.4, ease: 'power2.out' });
   } else {
     gsap.to(playerWrapper, { opacity: 1, duration: 0.4, ease: 'power2.out' });
