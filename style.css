@@ -18,6 +18,7 @@
 // Prevent scrolling on mobile devices (pull-to-refresh)
 html,
 body {
+  background-color: #facc15;
   overscroll-behavior: none;
   touch-action: none;
   height: 100%;
@@ -75,4 +76,15 @@ input[type='range']::-moz-range-thumb {
   height: 12px;
   border: solid 2px #000;
   border-radius: 0;
+}
+
+.island-safe-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-top: env(safe-area-inset-top);
+  background-color: #facc15;
+  z-index: 9999;
+  pointer-events: none;
 }
