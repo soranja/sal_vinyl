@@ -18,17 +18,14 @@
 // Prevent scrolling on mobile devices (pull-to-refresh)
 html,
 body {
-  background-color: #facc15;
-  /* overscroll-behavior: none; */
-  /* touch-action: none; */
-  /* height: 100%; */
-  /* overflow: hidden; */
-  min-height: -webkit-fill-available;
-  min-height: 100vh;
+  overscroll-behavior: none;
+  touch-action: none;
+  height: 100%;
+  overflow: hidden;
 }
 
 :root {
-  --app-height: calc(100vh + env(safe-area-inset-top));
+  --app-height: 100vh;
 }
 
 #play-icon {
