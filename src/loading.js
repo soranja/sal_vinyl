@@ -1,6 +1,5 @@
 function isSafariWithHEVCAlphaSupport() {
   const ua = navigator.userAgent;
-
   const isApple = /Macintosh|iPhone|iPad|iPod/.test(ua);
   const isRealSafari =
     ua.includes('Safari') &&
@@ -10,10 +9,8 @@ function isSafariWithHEVCAlphaSupport() {
     !ua.includes('EdgiOS') &&
     !ua.includes('OPiOS') &&
     !ua.includes('SamsungBrowser');
-
   const safariMatch = ua.match(/Version\/(\d+)\./);
   const safariVersion = safariMatch ? parseInt(safariMatch[1], 10) : 0;
-
   return isRealSafari && isApple && safariVersion >= 13;
 }
 
@@ -22,33 +19,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const video = document.getElementById('loading-animation');
   if (!loader || !video) return;
 
+  let loaderHidden = false;
   function hideLoader() {
+    if (loaderHidden) return;
+    loaderHidden = true;
     loader.classList.add('opacity-0', 'pointer-events-none');
     loader.addEventListener('transitionend', () => loader.remove(), { once: true });
   }
 
-  // Detect Safari w/ alpha support
+  // Set correct video source
   const useHEVC = isSafariWithHEVCAlphaSupport();
-
-  // Set video source dynamically
   const source = document.createElement('source');
   source.src = useHEVC ? '/loading/loading-ios.mov' : '/loading/loading.webm';
   source.type = useHEVC ? 'video/quicktime' : 'video/webm';
-
-  // Replace existing <source> to be safe
-  video.innerHTML = ''; // Clear default source
+  video.innerHTML = '';
   video.appendChild(source);
-
-  // Force load (Safari safety)
   video.preload = 'auto';
   video.load();
 
-  // Hide loader on load
+  // Attempt to play video explicitly
+  video.play().catch(() => {
+    // Mobile autoplay might fail — fallback is in place
+  });
+
+  // Hide on load, or when video is ready
   window.addEventListener('load', hideLoader);
-
-  // Also hide after video can play
   video.addEventListener('canplay', hideLoader);
+  video.addEventListener('loadeddata', hideLoader); // extra fallback
 
-  // Fallback after 3 seconds
+  // Failsafe timeout
   setTimeout(hideLoader, 3000);
 });
