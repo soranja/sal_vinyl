@@ -11,9 +11,9 @@
   <body>
     <div
       id="loading-overlay"
-      class="fixed inset-0 bg-[#101010] flex items-center justify-center z-[9999] transition-opacity duration-500 ease-out"
+      class="fixed inset-0 flex items-center justify-center z-[9999] transition-opacity duration-500 ease-out"
     >
-      <picture>
+      <!-- <picture>
         <source media="(min-width: 1024px)" srcset="/loading/loading-lg.png" />
         <img
           id="loading-fallback"
@@ -21,18 +21,17 @@
           alt="Loading…"
           class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full z-0"
         />
-      </picture>
+      </picture> -->
 
       <video
         id="loading-animation"
+        src="/loading/loading-ios.mov"
         autoplay
         muted
         loop
         playsinline
         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[60%] h-auto z-10"
-      >
-        <!-- source injected by JS -->
-      </video>
+      ></video>
     </div>
 
     <div
@@ -141,7 +140,7 @@
       </div>
     </div>
 
-    <script src="/src/loading.js" defer></script>
+    <!-- <script src="/src/loading.js" defer></script> -->
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/appHeight.js"></script>
   </body>
