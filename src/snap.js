@@ -14,6 +14,7 @@ import {
   records,
 } from './constants';
 import { showDragInstruction, hideDragInstruction, updatePlayerWrapperOpacity } from './instructions.js';
+import { updatePointerVisibility } from './audioPlayer.js';
 
 function snapTween(record, target, opts = {}) {
   if (record.dataset.frozen === 'true') return;
@@ -33,7 +34,7 @@ function snapTween(record, target, opts = {}) {
     y: curY + (target.y - here.y),
     duration: 0.8,
     ease: 'power3.out',
-    overwrite: true,
+    overwrite: 'auto',
   });
 
   if (vinylWrapper) {
@@ -41,9 +42,11 @@ function snapTween(record, target, opts = {}) {
       scale: scaleValue,
       duration: 0.8,
       ease: 'power3.out',
-      overwrite: true,
+      overwrite: 'auto',
     });
   }
+
+  updatePointerVisibility();
 }
 
 function unsnapToInit(record, meta) {
@@ -74,6 +77,7 @@ function unsnapToInit(record, meta) {
 
   clearSnappedRecord();
   setRecordReady(false);
+  updatePointerVisibility();
   fadeOutRecordInfo();
   showDragInstruction();
   updatePlayerWrapperOpacity();
@@ -108,15 +112,17 @@ export function initProximitySnap(record, audio) {
 
     if (isDragged) {
       if (meta.isReadyForReadySnap && snapped && snapped !== record) {
-        const prev = records.find((r) => r.audio === snapped.dataset.name);
-        snapTween(snapped, prev.initPos, { resetZ: true });
-        prev.readySnapped = false;
-        prev.initSnapped = true;
+        const prevMeta = records.find((r) => r.audio === snapped.dataset.name);
+        if (prevMeta) {
+          unsnapToInit(snapped, prevMeta);
+        }
+        snapTween(snapped, prevMeta.initPos, { resetZ: true });
+        prevMeta.readySnapped = false;
+        prevMeta.initSnapped = true;
         snapped.style.zIndex = snapped.dataset.initZ;
         clearSnappedRecord();
         setRecordReady(false);
       }
-
       requestAnimationFrame(loop);
       return;
     }
@@ -137,25 +143,40 @@ export function initProximitySnap(record, audio) {
       if (meta.isReadyForReadySnap) {
         if (snapped && snapped !== record) {
           const prev = records.find((r) => r.audio === snapped.dataset.name);
+          // ADD THIS CALL HERE AS WELL
+          if (prev) {
+            unsnapToInit(snapped, prev);
+          }
           snapTween(snapped, prev.initPos, { resetZ: true });
           prev.readySnapped = false;
           prev.initSnapped = true;
           snapped.style.zIndex = snapped.dataset.initZ;
         }
-
         setSnappedRecord(record);
         records.forEach((r) => (r.readySnapped = false));
         meta.readySnapped = true;
         meta.initSnapped = false;
-
         setCurrentAudio(audio);
         setCurrentRecord(record);
         setRecordReady(true);
+
+        const pointerWrapper = document.getElementById('progress-pointer-wrapper');
+        const barFill = document.getElementById('progress-bar-fill');
+        const barWrapper = document.getElementById('progress-bar-wrapper');
+
+        if (pointerWrapper && barFill && barWrapper) {
+          const maxX = barWrapper.offsetWidth - pointerWrapper.offsetWidth;
+          const ratio = audio.currentTime / audio.duration;
+          const newX = ratio * maxX;
+
+          gsap.set(barFill, { width: newX });
+          gsap.set(pointerWrapper, { x: newX });
+        }
+
         hideDragInstruction();
         fadeInRecordInfo(meta);
         updatePlayerWrapperOpacity();
         snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
-
         meta.readyDragged = false;
         meta.initDragged = false;
       } else if (meta.isReadyForInitSnap) {

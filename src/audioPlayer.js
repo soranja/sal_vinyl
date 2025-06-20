@@ -14,25 +14,28 @@ import {
 
 gsap.registerPlugin(Draggable);
 
+// Updates PROGRESS BAR POINTER visibility
+export function updatePointerVisibility() {
+  const pointerWrapper = document.getElementById('progress-pointer-wrapper');
+
+  if (pointerWrapper) {
+    gsap.to(pointerWrapper, {
+      autoAlpha: isRecordReady() ? 1 : 0,
+      duration: 0.3,
+      overwrite: 'auto',
+    });
+  }
+}
+
 // AUDIO PLAYER LAUNCHER
 export function initAudioPlayer() {
   const needle = document.getElementById('needle');
   const playButton = document.getElementById('play-button');
   const barWrapper = document.getElementById('progress-bar-wrapper');
   const barFill = document.getElementById('progress-bar-fill');
-  const pointer = document.getElementById('progress-bar-pointer');
   const pointerWrapper = document.getElementById('progress-pointer-wrapper');
+  const pointer = document.getElementById('progress-bar-pointer');
   const volumeControl = document.getElementById('volume-control');
-
-  // Updates PROGRESS BAR POINTER visibility
-  function updatePointerState() {
-    const visible = isRecordReady();
-    const audio = getCurrentAudio();
-    pointerWrapper.style.visibility = 'visible';
-    // !visible && audio.currentTime === 0;
-    // pointerWrapper.style.opacity = visible ? '1' : '0';
-    // pointerWrapper.style.cursor = visible ? 'pointer' : 'default';
-  }
 
   // Updates PROGRESS BAR fill and ITS POINTER POS according to the audio
   function updateProgressBar() {
@@ -47,7 +50,7 @@ export function initAudioPlayer() {
     gsap.set(barFill, { width: newX });
     gsap.set(pointerWrapper, { x: newX });
 
-    updatePointerState();
+    updatePointerVisibility();
     if (!audio.paused) requestAnimationFrame(updateProgressBar);
   }
 
@@ -55,6 +58,10 @@ export function initAudioPlayer() {
   function resetProgressBar() {
     gsap.set(barFill, { width: 0 });
     gsap.set(pointerWrapper, { x: 0 });
+    gsap.to(pointer, {
+      autoAlpha: isRecordReady() ? 1 : 0,
+      duration: 0.3,
+    });
   }
 
   // Controls and visualises VOLUME BAR
@@ -110,7 +117,7 @@ export function initAudioPlayer() {
         audio.currentTime = ratio * audio.duration;
 
         gsap.set(barFill, { width: this.x });
-        gsap.set(record, { rotation: ratio * 360 }); // this and recordSpin relation, conflict?
+        gsap.set(record, { rotation: ratio * 360 });
         gsap.set(needle, { rotation: 30 + (45 - 30) * ratio, zIndex: 51 });
       },
       onDragEnd: function () {
@@ -131,11 +138,11 @@ export function initAudioPlayer() {
           updateProgressBar();
         }
 
-        updatePointerState();
+        updatePointerVisibility();
       },
     });
 
-    updatePointerState();
+    updatePointerVisibility();
   });
 
   // PLAY & PAUSE BUTTON CLICK Logic
@@ -200,7 +207,7 @@ export function initAudioPlayer() {
               resetProgressBar();
               currentAudio.currentTime = 0;
               setPlayState(false);
-              updatePointerState();
+              updatePointerVisibility();
             },
             { once: true },
           );
@@ -224,7 +231,7 @@ export function initAudioPlayer() {
     }
 
     setPlayState(!isPlayed());
-    updatePointerState();
+    updatePointerVisibility();
   });
 
   // KEY CONTROLS
