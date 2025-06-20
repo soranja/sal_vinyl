@@ -10,6 +10,32 @@
 
   <body>
     <div
+      id="loading-overlay"
+      class="fixed inset-0 bg-[#101010] flex items-center justify-center z-[9999] transition-opacity duration-500 ease-out"
+    >
+      <picture>
+        <source media="(min-width: 1024px)" srcset="/loading/loading-lg.png" />
+        <img
+          id="loading-fallback"
+          src="/loading/loading.png"
+          alt="Loading…"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full z-0"
+        />
+      </picture>
+
+      <video
+        id="loading-animation"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[60%] h-auto z-10"
+      >
+        <source src="/loading/loading.webm" type="video/webm" />
+        Your browser does not support the loading animation.
+      </video>
+    </div>
+    <div
       id="app"
       class="relative flex flex-col lg:flex-row w-full h-[var(--app-height)] max-h-[var(--app-height)] bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
     >
@@ -86,6 +112,7 @@
               id="progress-bar-wrapper"
               class="w-full h-[calc(var(--app-height)*_0.019)] lg:h-[calc(var(--app-height)_*_0.013)] bg-[#555] relative overflow-hidden shadow-inners mb-[1.5px] lg:mb-0"
             >
+              <div id="buffer-bar-fill" class="absolute left-0 top-0 h-full bg-gray-800 w-0"></div>
               <div id="progress-bar-fill" class="absolute left-0 top-0 h-full bg-black w-0"></div>
               <div
                 id="progress-pointer-wrapper"
@@ -103,10 +130,9 @@
               min="0"
               max="1"
               step="0.01"
-              value="0.2"
+              value="0.1"
               class="w-[calc(var(--app-height)_*_0.1)] lg:mt-4 bg-[#333] cursor-pointer z-1 hidden lg:block"
             />
-            <!-- Change the vol back to 0.1 -->
             <div id="record-title-wrapper" class="relative overflow-hidden h-6 w-full lg:hidden">
               <div id="record-title" class="absolute whitespace-nowrap font-bold text-xl text-[#222]"></div>
             </div>
@@ -115,27 +141,8 @@
       </div>
     </div>
 
+    <script src="/src/loading.js" defer></script>
     <script type="module" src="/src/main.js"></script>
-    <script>
-      function setAppHeight() {
-        const doc = document.documentElement;
-        const height = window.innerHeight;
-        doc.style.setProperty('--app-height', `${height}px`);
-      }
-
-      // Only run once on load
-      window.addEventListener('DOMContentLoaded', setAppHeight);
-      window.addEventListener('orientationchange', setAppHeight);
-
-      // Debounce resize to avoid layout jank from address bar toggling
-      let lastHeight = window.innerHeight;
-      window.addEventListener('resize', () => {
-        const currentHeight = window.innerHeight;
-        if (Math.abs(currentHeight - lastHeight) > 100) {
-          setAppHeight();
-          lastHeight = currentHeight;
-        }
-      });
-    </script>
+    <script type="module" src="/src/appHeight.js"></script>
   </body>
 </html>

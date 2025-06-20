@@ -30,7 +30,6 @@ export function updatePointerVisibility() {
 // AUDIO PLAYER LAUNCHER
 export function initAudioPlayer() {
   const needle = document.getElementById('needle');
-  const playButton = document.getElementById('play-button');
   const barWrapper = document.getElementById('progress-bar-wrapper');
   const barFill = document.getElementById('progress-bar-fill');
   const pointerWrapper = document.getElementById('progress-pointer-wrapper');
@@ -152,6 +151,18 @@ export function initAudioPlayer() {
     const currentRecord = getCurrentRecord();
     const vinylWrapper = currentRecord.querySelector('#vinyl-wrapper');
     if (!currentAudio || !currentRecord) return;
+
+    if (currentAudio.preload === 'none') {
+      currentAudio.preload = 'auto';
+      currentAudio.load();
+    }
+
+    currentAudio.addEventListener('progress', () => {
+      if (!currentAudio.duration || !currentAudio.buffered.length) return;
+      const bufferedEnd = currentAudio.buffered.end(currentAudio.buffered.length - 1);
+      const pct = (bufferedEnd / currentAudio.duration) * 100;
+      document.getElementById('buffer-bar-fill').style.width = pct + '%';
+    });
 
     currentAudio.volume = parseFloat(volumeControl.value);
 

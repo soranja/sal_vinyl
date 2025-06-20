@@ -61,6 +61,7 @@ function unsnapToInit(record, meta) {
   const vinylWrapper = record.querySelector('#vinyl-wrapper');
   const progressBarFill = document.getElementById('progress-bar-fill');
   const progressBarPointer = document.getElementById('progress-bar-pointer');
+  const bufferBarFill = document.getElementById('buffer-bar-fill');
 
   gsap.to(vinylWrapper, { rotation: 0, duration: 0.4, ease: 'power2.out' });
   gsap.to(record, { rotation: 0, duration: 0.4, ease: 'power2.out' });
@@ -73,6 +74,10 @@ function unsnapToInit(record, meta) {
   if (progressBarFill && progressBarPointer) {
     gsap.set(progressBarFill, { width: 0 });
     gsap.set(progressBarPointer, { x: 0 });
+  }
+
+  if (bufferBarFill) {
+    gsap.set(bufferBarFill, { width: 0 });
   }
 
   clearSnappedRecord();
