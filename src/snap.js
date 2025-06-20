@@ -21,10 +21,13 @@ function snapTween(record, target, opts = {}) {
   const curX = gsap.getProperty(record, 'x');
   const curY = gsap.getProperty(record, 'y');
 
+  const isMobile = window.innerWidth < 768;
+  const scaleValue = opts.scaleUp ? (isMobile ? 5.5 : 3.5) : 1;
+
   gsap.to(record, {
     x: curX + (target.x - here.x),
     y: curY + (target.y - here.y),
-    scale: opts.scaleUp ? 2 : 1,
+    scale: scaleValue,
     duration: 0.8,
     ease: 'power3.out',
     overwrite: 'auto',
