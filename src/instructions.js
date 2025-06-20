@@ -27,8 +27,9 @@ export function isSafariWithHEVCAlphaSupport() {
 
 export function showDragInstruction() {
   const isLargeScreen = window.innerWidth >= 1024;
-  const wrapperClass = isLargeScreen ? 'record-info-wrapper' : 'ready-area';
-  const wrapper = document.getElementById(wrapperClass);
+  const wrapper = isLargeScreen
+    ? document.getElementById('record-info-wrapper')
+    : document.getElementById('ready-area-threshold');
   const title = document.getElementById('record-title');
   const titleLg = document.getElementById('record-title-lg');
   const desc = document.getElementById('record-description');
