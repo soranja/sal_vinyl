@@ -22,12 +22,15 @@
       <!-- INIT AREA -->
       <div
         id="init-area"
-        class="w-[100vw] h-[calc(var(--app-height)_*_0.15)] md:h-[calc(var(--app-height)_*_0.25)] top-0 left-0 flex flex-row relative lg:w-[23vh] lg:h-screen items-center justify-start z-50"
+        class="flex flex-row z-50 w-[100vw] h-[calc(var(--app-height)_*_0.3)] lg:items-center justify-start md:h-[calc(var(--app-height)_*_0.25)] lg:w-[23vh] lg:h-screen border-2 border-green-500"
       >
-        <div id="init-area-threshold" class="flex flex-col justify-center items-start w-full h-full">
+        <div
+          id="init-area-threshold"
+          class="flex flex-col lg:justify-center items-start w-full h-full border-2 border-red-500"
+        >
           <div
             id="record-list"
-            class="w-[100vw] top-0 left-0 flex flex-row justify-center items-center gap-x-2 relative lg:w-[22vh] h-full lg:flex-col bg-yellow-500"
+            class="w-[100vw] top-0 left-0 flex flex-row justify-center items-center gap-x-2 relative lg:w-[22vh] h-2/3 lg:h-full lg:flex-col bg-yellow-500"
           >
             <!-- Records are here (via JS) -->
           </div>
@@ -37,11 +40,11 @@
       <!-- READY AREA -->
       <div
         id="ready-area"
-        class="relative flex flex-col justify-center items-center lg:items-end w-full h-[calc(100%-10%)] lg:h-[var(--app-height)]"
+        class="relative flex flex-col justify-center items-center lg:items-end w-full h-[calc(100%-10%)] lg:h-[var(--app-height)] border-2 border-green-500"
       >
         <div
           id="ready-area-threshold"
-          class="flex flex-col lg:flex-row justify-center lg:justify-start items-center w-auto lg:w-11/12 h-full gap-x-4"
+          class="flex flex-col lg:flex-row justify-center items-center w-full h-full gap-x-16 border-2 border-red-500"
         >
           <!-- Vinyl Player -->
           <div id="player-wrapper" class="flex">

@@ -26,7 +26,9 @@ export function isSafariWithHEVCAlphaSupport() {
 }
 
 export function showDragInstruction() {
-  const wrapper = document.getElementById('record-info-wrapper');
+  const isLargeScreen = window.innerWidth >= 1024;
+  const wrapperClass = isLargeScreen ? 'record-info-wrapper' : 'ready-area';
+  const wrapper = document.getElementById(wrapperClass);
   const title = document.getElementById('record-title');
   const titleLg = document.getElementById('record-title-lg');
   const desc = document.getElementById('record-description');
@@ -46,17 +48,24 @@ export function showDragInstruction() {
       // Create video
       wrapper.innerHTML += `
         <video
-          src=${videoSrc}
+          src="${videoSrc}"
           autoplay
           loop
           muted
           playsinline
-          class="max-w-[500px] w-full opacity-0 transition-opacity duration-300 ease-in fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:left-auto lg:top-auto lg:translate-x-0 lg:translate-y-0"
-          style="background-color: transparent; mix-blend-mode: normal; isolation: isolate;"
+          class="max-w-[500px] w-full opacity-0 transition-opacity duration-300 ease-in"
         ></video>
       `;
+
       instructionVideo = wrapper.querySelector('video:last-of-type');
 
+      if (isLargeScreen) {
+        instructionVideo.classList.add('static');
+      } else {
+        instructionVideo.classList.add('absolute', 'top-1/4');
+      }
+
+      instructionVideo = wrapper.querySelector('video:last-of-type');
       wrapper.appendChild(instructionVideo);
 
       // Fade in video

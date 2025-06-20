@@ -7,17 +7,13 @@ import {
   setRecordReady,
   setCurrentAudio,
   setCurrentRecord,
-  setRecordSpin,
   getSnappedRecord,
   getCurrentDraggedRecord,
   getCurrentAudio,
-  getRecordSpin,
   readyPos,
   records,
 } from './constants';
 import { showDragInstruction, hideDragInstruction, updatePlayerWrapperOpacity } from './instructions.js';
-
-// gsap.registerPlugin();
 
 function snapTween(record, target, opts = {}) {
   if (record.dataset.frozen === 'true') return;
@@ -28,7 +24,7 @@ function snapTween(record, target, opts = {}) {
   gsap.to(record, {
     x: curX + (target.x - here.x),
     y: curY + (target.y - here.y),
-    scale: opts.scaleUp ? 3.5 : 1,
+    scale: opts.scaleUp ? 2 : 1,
     duration: 0.8,
     ease: 'power3.out',
     overwrite: 'auto',
@@ -37,7 +33,6 @@ function snapTween(record, target, opts = {}) {
 
 function unsnapToInit(record, meta) {
   snapTween(record, meta.initPos, { resetZ: true });
-  // Reset the record's z-index to its initial value
   record.style.zIndex = record.dataset.initZ;
 
   meta.readySnapped = false;
@@ -102,6 +97,7 @@ export function initProximitySnap(record, audio) {
         snapTween(snapped, prev.initPos, { resetZ: true });
         prev.readySnapped = false;
         prev.initSnapped = true;
+        snapped.style.zIndex = snapped.dataset.initZ;
         clearSnappedRecord();
         setRecordReady(false);
       }
@@ -123,6 +119,8 @@ export function initProximitySnap(record, audio) {
           snapTween(snapped, prev.initPos, { resetZ: true });
           prev.readySnapped = false;
           prev.initSnapped = true;
+          // 👇 This is the missing part if you didn't include it already
+          snapped.style.zIndex = snapped.dataset.initZ;
         }
 
         setSnappedRecord(record);

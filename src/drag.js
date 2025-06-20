@@ -55,6 +55,17 @@ export function initRecordDragging(recordWrapper) {
       }
     },
 
+    onRelease() {
+      const meta = metaOf(this.target);
+
+      const justClickedInInit = meta.isInInitArea && !this.hasMoved && getSnappedRecord() !== this.target;
+
+      if (justClickedInInit) {
+        gsap.to(this.target, { scale: 1, duration: 0.3, ease: 'power2.out' });
+        this.target.style.zIndex = this.target.dataset.initZ;
+      }
+    },
+
     onDrag() {
       const meta = metaOf(this.target);
       meta.currentPos = { x: this.x, y: this.y };
