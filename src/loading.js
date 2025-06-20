@@ -1,18 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
   const loader = document.getElementById('loading-overlay');
+  const video = document.getElementById('loading-animation');
   if (!loader) return;
 
-  // fires once ALL images, background-images, and <link> CSS are fetched
-  window.addEventListener('load', () => {
-    // trigger the Tailwind transition (opacity 1 → 0)
-    loader.classList.add('opacity-0');
-    // once it’s visually gone, remove it entirely
-    loader.addEventListener(
-      'transitionend',
-      () => {
-        loader.remove();
-      },
-      { once: true },
-    );
+  function hideLoader() {
+    loader.classList.add('opacity-0', 'pointer-events-none');
+    loader.addEventListener('transitionend', () => loader.remove(), { once: true });
+  }
+
+  // 1) normal full‐page load
+  window.addEventListener('load', hideLoader);
+
+  // 2) Safari/Firefox back-forward cache: reload video & hide
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) {
+      if (video) {
+        video.currentTime = 0;
+        video.load();
+      }
+      hideLoader();
+    }
   });
+
+  // 3) Safari iOS extra safety: force metadata-only load
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if (isSafari && video) {
+    video.preload = 'metadata';
+    video.load();
+  }
+
+  // 4) fallback after 3 seconds in case load/pageshow never fire
+  setTimeout(hideLoader, 3000);
 });

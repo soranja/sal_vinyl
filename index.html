@@ -11,30 +11,32 @@
   <body>
     <div
       id="loading-overlay"
-      class="fixed inset-0 bg-[#101010] flex items-center justify-center z-[9999] transition-opacity duration-500 ease-out"
+      class="fixed inset-0 flex items-center justify-center bg-[#101010] z-[9999] transition-opacity duration-500 ease-out"
     >
-      <picture>
-        <source media="(min-width: 1024px)" srcset="/loading/loading-lg.png" />
-        <img
-          id="loading-fallback"
-          src="/loading/loading.png"
-          alt="Loading…"
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full z-0"
-        />
-      </picture>
+      <div class="relative w-2/5 lg:w-1/5">
+        <!-- small screen -->
+        <img src="/loading/loading.png" alt="Loading…" class="block lg:hidden w-full" />
+        <!-- large screen -->
+        <img src="/loading/loading-lg.png" alt="Loading…" class="hidden lg:block w-full" />
 
-      <video
-        id="loading-animation"
-        autoplay
-        muted
-        loop
-        playsinline
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[60%] h-auto z-10"
-      >
-        <source src="/loading/loading.webm" type="video/webm" />
-        Your browser does not support the loading animation.
-      </video>
+        <video
+          id="loading-animation"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          class="absolute inset-0 w-full h-full"
+        >
+          <!-- primary -->
+          <source src="/loading/loading.webm" type="video/webm" />
+          <!-- Safari/iOS fallback -->
+          <source src="/loading/loading.mov" type="video/quicktime" />
+          Your browser doesn’t support this animation.
+        </video>
+      </div>
     </div>
+
     <div
       id="app"
       class="relative flex flex-col lg:flex-row w-full h-[var(--app-height)] max-h-[var(--app-height)] bg-[url(/bg-tile-gray.png)] bg-repeat bg-[length:100px_100px] text-white overflow-hidden"
