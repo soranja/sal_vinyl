@@ -143,7 +143,6 @@ export function initProximitySnap(record, audio) {
       if (meta.isReadyForReadySnap) {
         if (snapped && snapped !== record) {
           const prev = records.find((r) => r.audio === snapped.dataset.name);
-          // ADD THIS CALL HERE AS WELL
           if (prev) {
             unsnapToInit(snapped, prev);
           }

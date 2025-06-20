@@ -19,7 +19,7 @@
 html,
 body {
   overscroll-behavior: none;
-  touch-action: none;
+  /* touch-action: none; */
   height: 100%;
   overflow: hidden;
 }

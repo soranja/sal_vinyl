@@ -147,6 +147,7 @@ export function initAudioPlayer() {
 
   // PLAY & PAUSE BUTTON CLICK Logic
   playButton.addEventListener('click', () => {
+    console.log('Play clicked. isRecordReady =', isRecordReady());
     if (!isRecordReady()) return;
 
     const currentAudio = getCurrentAudio();

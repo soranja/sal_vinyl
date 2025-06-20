@@ -78,10 +78,8 @@ export function fadeOutRecordInfo() {
   const bgElem = document.getElementById('ready-area-background');
   if (!title || !titleLg || !desc || !bgElem) return;
 
-  // stop any marquee in flight
   stopMarquee(title);
 
-  // clear transforms
   title.style.transition = 'none';
   title.style.transform = 'translateX(0)';
 

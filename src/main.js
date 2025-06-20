@@ -15,25 +15,11 @@ document.addEventListener(
 
 document.addEventListener('DOMContentLoaded', () => {
   const recordListContainer = document.getElementById('record-list');
-  const title = document.getElementById('record-title');
-  const description = document.getElementById('record-description');
-  const audioBackground = document.getElementById('ready-area-background');
-
   showWelcomeModal();
 
   if (localStorage.getItem('welcomeModalShown') && !getSnappedRecord()) {
     showDragInstruction();
   }
-
-  // if (title) {
-  //   title.textContent = '';
-  //   title.classList.add('hidden');
-  // }
-  // if (description) {
-  //   description.textContent = '';
-  //   description.classList.add('hidden');
-  // }
-  // if (audioBackground) audioBackground.style.backgroundImage = '';
 
   initAudioPlayer();
   createRecordList(recordListContainer);
