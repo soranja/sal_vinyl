@@ -17,21 +17,33 @@ import { showDragInstruction, hideDragInstruction, updatePlayerWrapperOpacity } 
 
 function snapTween(record, target, opts = {}) {
   if (record.dataset.frozen === 'true') return;
-  const here = getCenterOfElement(record);
+  const vinylWrapper = record.querySelector('#vinyl-wrapper');
+
   const curX = gsap.getProperty(record, 'x');
   const curY = gsap.getProperty(record, 'y');
-
+  const here = getCenterOfElement(record);
+  const dragged = getCurrentDraggedRecord();
+  const snapped = getSnappedRecord();
   const isMobile = window.innerWidth < 768;
-  const scaleValue = opts.scaleUp ? (isMobile ? 5.5 : 3.5) : 1;
+  const shouldScaleUp = opts.scaleUp && snapped === record && dragged !== record;
+  const scaleValue = shouldScaleUp ? (isMobile ? 5.5 : 3.5) : 1;
 
   gsap.to(record, {
     x: curX + (target.x - here.x),
     y: curY + (target.y - here.y),
-    scale: scaleValue,
     duration: 0.8,
     ease: 'power3.out',
-    overwrite: 'auto',
+    overwrite: true,
   });
+
+  if (vinylWrapper) {
+    gsap.to(vinylWrapper, {
+      scale: scaleValue,
+      duration: 0.8,
+      ease: 'power3.out',
+      overwrite: true,
+    });
+  }
 }
 
 function unsnapToInit(record, meta) {
@@ -113,7 +125,13 @@ export function initProximitySnap(record, audio) {
       if (!meta.isInReadySnapZone) {
         unsnapToInit(record, meta);
       } else {
-        snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
+        snapTween(record, readyPos, {
+          scaleUp: true,
+          playerSnap: true,
+        });
+
+        meta.readyDragged = false;
+        meta.initDragged = false;
       }
     } else {
       if (meta.isReadyForReadySnap) {
@@ -122,7 +140,6 @@ export function initProximitySnap(record, audio) {
           snapTween(snapped, prev.initPos, { resetZ: true });
           prev.readySnapped = false;
           prev.initSnapped = true;
-          // 👇 This is the missing part if you didn't include it already
           snapped.style.zIndex = snapped.dataset.initZ;
         }
 
@@ -137,7 +154,6 @@ export function initProximitySnap(record, audio) {
         hideDragInstruction();
         fadeInRecordInfo(meta);
         updatePlayerWrapperOpacity();
-
         snapTween(record, readyPos, { scaleUp: true, playerSnap: true });
 
         meta.readyDragged = false;

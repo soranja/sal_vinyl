@@ -7,10 +7,6 @@ export function createVinylWrapper(record, wrapperSize, index) {
   recordWrapper.style.height = `${wrapperSize}px`;
   gsap.set(recordWrapper, { x: 0, y: 0 });
 
-  // const rect = recordWrapper.getBoundingClientRect();
-  // recordWrapper.dataset.frozenX = rect.left;
-  // recordWrapper.dataset.frozenY = rect.top;
-
   if (window.innerWidth >= 1024) {
     recordWrapper.style.marginTop = `${index === 0 ? 0 : wrapperSize * -0.4}px`;
   } else {
