@@ -1,52 +1,25 @@
-// function isSafariWithHEVCAlphaSupport() {
-//   const ua = navigator.userAgent;
-//   const isApple = /Macintosh|iPhone|iPad|iPod/.test(ua);
-//   const isRealSafari =
-//     ua.includes('Safari') &&
-//     !ua.includes('Chrome') &&
-//     !ua.includes('CriOS') &&
-//     !ua.includes('FxiOS') &&
-//     !ua.includes('EdgiOS') &&
-//     !ua.includes('OPiOS') &&
-//     !ua.includes('SamsungBrowser');
-//   const safariMatch = ua.match(/Version\/(\d+)\./);
-//   const safariVersion = safariMatch ? parseInt(safariMatch[1], 10) : 0;
-//   return isRealSafari && isApple && safariVersion >= 13;
-// }
+import { isSafariWithHEVCAlphaSupport } from './instructions';
 
-// document.addEventListener('DOMContentLoaded', () => {
-//   const loader = document.getElementById('loading-overlay');
-//   const video = document.getElementById('loading-animation');
-//   if (!loader || !video) return;
+document.addEventListener('DOMContentLoaded', () => {
+  const isLargeScreen = window.innerWidth >= 1024;
+  const loadingOverlay = document.getElementById('loading-overlay');
+  if (!loadingOverlay) return; // fail-safe
 
-//   let loaderHidden = false;
-//   function hideLoader() {
-//     if (loaderHidden) return;
-//     loaderHidden = true;
-//     loader.classList.add('opacity-0', 'pointer-events-none');
-//     loader.addEventListener('transitionend', () => loader.remove(), { once: true });
-//   }
+  const fallbackImage = document.createElement('img');
+  fallbackImage.id = 'loading-fallback';
+  fallbackImage.src = isLargeScreen ? '/loading/loading-lg.png' : '/loading/loading.png';
+  fallbackImage.alt = 'Loading…';
+  fallbackImage.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full z-0';
 
-//   // Set correct video source
-//   const useHEVC = isSafariWithHEVCAlphaSupport();
-//   const source = document.createElement('source');
-//   source.src = useHEVC ? '/loading/loading-ios.mov' : '/loading/loading.webm';
-//   source.type = useHEVC ? 'video/quicktime' : 'video/webm';
-//   video.innerHTML = '';
-//   video.appendChild(source);
-//   video.preload = 'auto';
-//   video.load();
+  const loadingVideo = document.createElement('video');
+  loadingVideo.id = 'loading-animation';
+  loadingVideo.autoplay = true;
+  loadingVideo.muted = true;
+  loadingVideo.loop = true;
+  loadingVideo.playsInline = true;
+  loadingVideo.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[60%] h-auto z-10';
+  loadingVideo.src = isSafariWithHEVCAlphaSupport() ? '/loading/loading-ios.mov' : '/loading/loading.webm';
 
-//   // Attempt to play video explicitly
-//   video.play().catch(() => {
-//     // Mobile autoplay might fail — fallback is in place
-//   });
-
-//   // Hide on load, or when video is ready
-//   window.addEventListener('load', hideLoader);
-//   video.addEventListener('canplay', hideLoader);
-//   video.addEventListener('loadeddata', hideLoader); // extra fallback
-
-//   // Failsafe timeout
-//   setTimeout(hideLoader, 3000);
-// });
+  loadingOverlay.appendChild(fallbackImage);
+  loadingOverlay.appendChild(loadingVideo);
+});
