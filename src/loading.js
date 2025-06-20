@@ -11,17 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1) normal full‐page load
   window.addEventListener('load', hideLoader);
 
-  // 2) Safari/Firefox back-forward cache: reload video & hide
-  window.addEventListener('pageshow', (e) => {
-    if (e.persisted) {
-      if (video) {
-        video.currentTime = 0;
-        video.load();
-      }
-      hideLoader();
-    }
-  });
-
   // 3) Safari iOS extra safety: force metadata-only load
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   if (isSafari && video) {
