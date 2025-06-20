@@ -142,13 +142,13 @@ export function initProximitySnap(record, audio) {
     } else {
       if (meta.isReadyForReadySnap) {
         if (snapped && snapped !== record) {
-          const prev = records.find((r) => r.audio === snapped.dataset.name);
-          if (prev) {
-            unsnapToInit(snapped, prev);
+          const prevMeta = records.find((r) => r.audio === snapped.dataset.name);
+          if (prevMeta) {
+            unsnapToInit(snapped, prevMeta);
           }
-          snapTween(snapped, prev.initPos, { resetZ: true });
-          prev.readySnapped = false;
-          prev.initSnapped = true;
+          snapTween(snapped, prevMeta.initPos, { resetZ: true });
+          prevMeta.readySnapped = false;
+          prevMeta.initSnapped = true;
           snapped.style.zIndex = snapped.dataset.initZ;
         }
         setSnappedRecord(record);

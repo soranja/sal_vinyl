@@ -145,9 +145,7 @@ export function initAudioPlayer() {
     updatePointerVisibility();
   });
 
-  // PLAY & PAUSE BUTTON CLICK Logic
-  playButton.addEventListener('click', () => {
-    console.log('Play clicked. isRecordReady =', isRecordReady());
+  function handlePlayClick() {
     if (!isRecordReady()) return;
 
     const currentAudio = getCurrentAudio();
@@ -233,6 +231,13 @@ export function initAudioPlayer() {
 
     setPlayState(!isPlayed());
     updatePointerVisibility();
+  }
+
+  // PLAY & PAUSE BUTTON CLICK Logic
+  document.body.addEventListener('click', (e) => {
+    if (e.target.id === 'play-button') {
+      handlePlayClick();
+    }
   });
 
   // KEY CONTROLS
@@ -243,9 +248,7 @@ export function initAudioPlayer() {
 
     switch (e.code) {
       case 'Space':
-        e.preventDefault();
-        playButton.click();
-        break;
+        handlePlayClick();
 
       case 'ArrowUp':
         e.preventDefault();
