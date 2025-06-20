@@ -66,7 +66,6 @@ export function showDragInstruction() {
         instructionVideo.classList.add('absolute', 'top-1/4');
       }
 
-      instructionVideo = wrapper.querySelector('video:last-of-type');
       wrapper.appendChild(instructionVideo);
 
       // Fade in video
