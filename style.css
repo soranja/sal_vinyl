@@ -15,6 +15,18 @@
   }
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: env(safe-area-inset-top);
+  background-color: #222;
+  z-index: 9999;
+  pointer-events: none;
+}
+
 // Prevent scrolling on mobile devices (pull-to-refresh)
 html,
 body {
