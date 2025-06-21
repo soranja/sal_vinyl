@@ -20,7 +20,7 @@ export function createRecordList(container) {
     container.appendChild(recordWrapper);
 
     const audio = new Audio(record.audio);
-    audio.preload = 'none';
+    // audio.preload = 'none';
     audio.loop = false;
 
     initProximitySnap(recordWrapper, audio);
