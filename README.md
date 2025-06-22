@@ -1,15 +1,3 @@
----
-title: INTERACTIVE VINYL RECORD PLAYER
-description: 'Simulates a classic vinyl turntable in the browser with GSAP-powered animations and pure JavaScript interactions.'
-tags:
-  - JavaScript
-  - GSAP
-  - Draggable
-  - Tailwind CSS
-  - Audio Player
-  - UI Animation
----
-
 # Interactive Vinyl Record Player
 
 An interactive vinyl record player interface that simulates the look and feel of a classic turntable in the browser. Users can browse and play tracks by dragging vinyl onto the virtual turntable.
