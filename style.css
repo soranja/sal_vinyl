@@ -15,6 +15,10 @@
   }
 }
 
+@viewport {
+  viewport-fit: cover;
+}
+
 body::before {
   content: '';
   position: fixed;
@@ -34,7 +38,10 @@ body {
   touch-action: none;
   height: 100%;
   overflow: hidden;
-  background-color: #2596be;
+}
+
+body {
+  background-color: #2596be !important;
 }
 
 :root {
