@@ -6,7 +6,8 @@ import { createVinylWrapper } from './vinylWrapper.js';
 export function createRecordList(container) {
   const recordListWidth = container.offsetWidth;
   const isSmallScreen = window.innerWidth <= 1024;
-  const wrapperSize = recordListWidth * (isSmallScreen ? 0.2 : 0.8);
+  const wrapperSize = Math.round(recordListWidth * (isSmallScreen ? 0.2 : 0.8));
+  const overlap = Math.round(wrapperSize * 0.4);
 
   records.forEach((record, index) => {
     const zLayer = 10 + index;
@@ -16,11 +17,18 @@ export function createRecordList(container) {
     recordWrapper.dataset.index = index + 1;
     recordWrapper.style.zIndex = zLayer;
     recordWrapper.dataset.initZ = `${zLayer}`;
+    recordWrapper.style.width = `${wrapperSize}px`;
+    recordWrapper.style.height = `${wrapperSize}px`;
+
+    if (isSmallScreen) {
+      recordWrapper.style.marginLeft = index === 0 ? `0px` : `-${overlap}px`;
+    } else {
+      recordWrapper.style.marginTop = index === 0 ? `0px` : `-${overlap}px`;
+    }
 
     container.appendChild(recordWrapper);
 
     const audio = new Audio(record.audio);
-    // audio.preload = 'none';
     audio.loop = false;
 
     initProximitySnap(recordWrapper, audio);
