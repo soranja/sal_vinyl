@@ -5,7 +5,7 @@ import { createVinylWrapper } from './vinylWrapper.js';
 
 export function createRecordList(container) {
   const recordListWidth = container.offsetWidth || window.innerWidth;
-  const isSmallScreen = window.innerWidth <= 1024;
+  const isSmallScreen = window.innerWidth < 1024;
   const wrapperSize = Math.round(recordListWidth * (isSmallScreen ? 0.2 : 0.8));
   const overlap = Math.round(wrapperSize * 0.4);
 
