@@ -17,23 +17,17 @@ const recordListContainer = document.getElementById('record-list');
 
 document.addEventListener('DOMContentLoaded', () => {
   showWelcomeModal();
+
   if (localStorage.getItem('welcomeModalShown') && !getSnappedRecord()) {
     showDragInstruction();
   }
 
   initAudioPlayer();
-  createRecordList(recordListContainer);
-
   requestAnimationFrame(() => {
-    updateStaticDots();
-    updatePlayerWrapperOpacity();
+    createRecordList(recordListContainer);
+    requestAnimationFrame(() => {
+      updateStaticDots();
+      updatePlayerWrapperOpacity();
+    });
   });
-
-  // window.addEventListener('resize', () => {
-  //   const recordListContainer = document.getElementById('record-list');
-  //   recordListContainer.innerHTML = '';
-
-  //   createRecordList(recordListContainer);
-  //   requestAnimationFrame(updateStaticDots);
-  // });
 });

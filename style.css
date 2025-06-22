@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-
 @layer utilities {
   .bg-side-vingette {
     background: linear-gradient(
@@ -19,7 +18,6 @@
   viewport-fit: cover;
 }
 
-// Prevent scrolling on mobile devices (pull-to-refresh)
 html,
 body {
   overscroll-behavior: none;

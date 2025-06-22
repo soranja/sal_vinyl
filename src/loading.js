@@ -8,25 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadingOverlay = document.getElementById('loading-overlay');
   if (!loadingOverlay) return;
 
-  // Create fallback image
-  const fallbackImage = document.createElement('img');
-  fallbackImage.id = 'loading-fallback';
-  fallbackImage.src = isLargeScreen ? '/loading/loading-lg.png' : '/loading/loading.png';
-  fallbackImage.alt = 'Loading…';
-  fallbackImage.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full z-0';
-
-  // Create video element
-  const loadingVideo = document.createElement('video');
-  loadingVideo.id = 'loading-animation';
-  loadingVideo.autoplay = true;
-  loadingVideo.muted = true;
-  loadingVideo.loop = true;
-  loadingVideo.playsInline = true;
-  loadingVideo.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[60%] h-auto z-10';
-  loadingVideo.src = isSafariWithHEVCAlphaSupport() ? '/loading/loading-ios.mov' : '/loading/loading.webm';
-
-  loadingOverlay.appendChild(fallbackImage);
-  loadingOverlay.appendChild(loadingVideo);
+  loadingOverlay.innerHTML = `
+    <img
+      id="loading-fallback"
+      src="${isLargeScreen ? '/loading/loading-lg.png' : '/loading/loading.png'}"
+      alt="Loading…"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full z-0"
+    >
+    <video
+      id="loading-animation"
+      autoplay
+      muted
+      loop
+      playsinline
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[60%] h-auto z-10"
+      src="${isSafariWithHEVCAlphaSupport() ? '/loading/loading-ios.mov' : '/loading/loading.webm'}"
+    ></video>
+  `;
 });
 
 window.addEventListener('load', () => {

@@ -5,17 +5,19 @@ const MODAL_STORAGE_KEY = 'welcomeModalShown';
 
 export function showWelcomeModal() {
   if (localStorage.getItem(MODAL_STORAGE_KEY)) return;
+  if (document.getElementById('welcome-modal-overlay')) return;
 
   const welcomeVideoSrc = isSafariWithHEVCAlphaSupport()
     ? '/instructions/welcome-ios.mov'
     : '/instructions/welcome.webm';
 
-  const overlay = document.createElement('div');
-  overlay.id = 'welcome-modal-overlay';
-  overlay.innerHTML = `
+  document.body.insertAdjacentHTML(
+    'beforeend',
+    `
+  <div id="welcome-modal-overlay" class="fixed inset-0 bg-black/85 flex justify-center items-center z-[9999]">
     <div class="bg-[#111] text-white p-8 rounded-xl max-w-[90vw] max-h-[80vh] shadow-2xl text-center flex flex-col items-center">
       <div class="relative inline-block w-full max-w-[200px] lg:max-w-[300px]">
-        <video autoplay muted loop playsinline nocontrols
+        <video autoplay muted loop playsinline
           src="${welcomeVideoSrc}"
           class="bg-transparent mix-blend-normal isolate w-full h-auto rounded-lg">
         </video>
@@ -30,16 +32,13 @@ export function showWelcomeModal() {
         Okay!
       </button>
     </div>
-  `;
-  overlay.className = 'fixed inset-0 bg-black/85 flex justify-center items-center z-[9999]';
-  const modalBox = overlay.firstElementChild;
-
-  overlay.appendChild(modalBox);
-  document.body.appendChild(overlay);
+  </div>
+`,
+  );
 
   document.getElementById('welcome-modal-close').addEventListener('click', () => {
     localStorage.setItem(MODAL_STORAGE_KEY, 'true');
-    document.body.removeChild(overlay);
+    document.getElementById('welcome-modal-overlay').remove();
     if (!getSnappedRecord()) showDragInstruction();
   });
 }

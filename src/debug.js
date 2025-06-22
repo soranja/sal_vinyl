@@ -189,10 +189,3 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
-
-export function logZChange(target, source) {
-  if (!target || typeof target !== 'object') return;
-  const id = target.id || (target.dataset && (target.dataset.name || target.dataset.index)) || 'unknown';
-  const z = target.style.zIndex || window.getComputedStyle(target).zIndex;
-  console.log(`[zIndex][${source}] ${id} => zIndex: ${z}`);
-}

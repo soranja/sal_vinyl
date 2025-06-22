@@ -14,7 +14,6 @@ import {
 
 gsap.registerPlugin(Draggable);
 
-// Updates PROGRESS BAR POINTER visibility
 export function updatePointerVisibility() {
   const pointerWrapper = document.getElementById('progress-pointer-wrapper');
 
@@ -27,7 +26,6 @@ export function updatePointerVisibility() {
   }
 }
 
-// AUDIO PLAYER LAUNCHER
 export function initAudioPlayer() {
   const needle = document.getElementById('needle');
   const barWrapper = document.getElementById('progress-bar-wrapper');
@@ -36,7 +34,6 @@ export function initAudioPlayer() {
   const pointer = document.getElementById('progress-bar-pointer');
   const volumeControl = document.getElementById('volume-control');
 
-  // Updates PROGRESS BAR fill and ITS POINTER POS according to the audio
   function updateProgressBar() {
     const audio = getCurrentAudio();
     if (!audio) return;
@@ -53,7 +50,6 @@ export function initAudioPlayer() {
     if (!audio.paused) requestAnimationFrame(updateProgressBar);
   }
 
-  // Resets PROGRESS BAR fill and ITS POINTER POS
   function resetProgressBar() {
     gsap.set(barFill, { width: 0 });
     gsap.set(pointerWrapper, { x: 0 });
@@ -63,7 +59,6 @@ export function initAudioPlayer() {
     });
   }
 
-  // Controls and visualises VOLUME BAR
   function setVolume(volume) {
     volume = Math.min(1, Math.max(0, volume));
     volumeControl.value = volume.toFixed(2);
@@ -79,7 +74,7 @@ export function initAudioPlayer() {
     setVolume(parseFloat(volumeControl.value));
   });
 
-  // Updates PROGRESS BAR DRAG (By Frame)
+  // PROGRESS BAR DRAG Logic (by frame)
   requestAnimationFrame(() => {
     const barWidth = barWrapper.offsetWidth;
     const maxX = barWidth - pointerWrapper.offsetWidth;
@@ -244,14 +239,13 @@ export function initAudioPlayer() {
     updatePointerVisibility();
   }
 
-  // PLAY & PAUSE BUTTON CLICK Logic
+  // PLAY & PAUSE Logic (click & keydowns)
   document.body.addEventListener('click', (e) => {
     if (e.target.id === 'play-button') {
       handlePlayClick();
     }
   });
 
-  // KEY CONTROLS
   document.addEventListener('keydown', (e) => {
     const audio = getCurrentAudio();
     const record = getCurrentRecord();
@@ -260,6 +254,7 @@ export function initAudioPlayer() {
     switch (e.code) {
       case 'Space':
         handlePlayClick();
+        break;
 
       case 'ArrowUp':
         e.preventDefault();
@@ -274,7 +269,6 @@ export function initAudioPlayer() {
       case 'ArrowLeft':
         e.preventDefault();
         audio.currentTime = Math.max(0, audio.currentTime - 5);
-        // Works but stacks with the recordSpin rotation and resets on the end / pause is broken
         gsap.to(record, {
           rotation: '-=10',
           duration: 0,

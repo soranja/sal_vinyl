@@ -24,7 +24,6 @@
         class="absolute pointer-events-none bg-no-repeat bg-center bg-cover opacity-10 w-full h-full"
       ></div>
 
-      <!-- INIT AREA -->
       <div
         id="init-area"
         class="flex flex-row z-50 w-[100vw] h-[calc(var(--app-height)_*_0.2)] lg:items-center justify-start md:h-[calc(var(--app-height)_*_0.25)] lg:w-[23vh] lg:h-screen"
@@ -34,12 +33,11 @@
             id="record-list"
             class="w-[100vw] top-0 left-0 flex flex-row justify-center items-center gap-x-2 relative lg:w-[22vh] h-2/3 lg:h-full lg:flex-col bg-yellow-500"
           >
-            <!-- Records are here (via JS) -->
+            <!-- Records (via JS) -->
           </div>
         </div>
       </div>
 
-      <!-- READY AREA -->
       <div
         id="ready-area"
         class="relative flex flex-col justify-center items-center lg:items-end w-full h-[calc(100%-20%)] lg:h-[var(--app-height)]"
@@ -48,7 +46,6 @@
           id="ready-area-threshold"
           class="flex flex-col lg:flex-row justify-center items-center w-[97%] h-full gap-x-16"
         >
-          <!-- Vinyl Player -->
           <div id="player-wrapper" class="flex">
             <div id="player-container">
               <img
@@ -78,7 +75,6 @@
           </div>
         </div>
 
-        <!-- Player Controls -->
         <div id="player-ui" class="flex justify-center items-start gap-x-4 bg-yellow-500 pb-8 p-6 w-full">
           <button id="play-button" class="p-3 bg-[#333] cursor-pointer flex items-center justify-center z-1">
             <img id="play-icon" src="/ui/play.svg" alt="play" class="w-6 h-6 pointer-events-none" />
@@ -120,8 +116,8 @@
       </div>
     </div>
 
+    <script type="module" src="/src/appHeight.js"></script>
     <script type="module" src="/src/loading.js"></script>
     <script type="module" src="/src/main.js"></script>
-    <script type="module" src="/src/appHeight.js"></script>
   </body>
 </html>
