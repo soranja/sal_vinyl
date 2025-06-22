@@ -19,18 +19,6 @@
   viewport-fit: cover;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: env(safe-area-inset-top);
-  background-color: #2596be;
-  z-index: 9999;
-  pointer-events: none;
-}
-
 // Prevent scrolling on mobile devices (pull-to-refresh)
 html,
 body {
@@ -41,7 +29,7 @@ body {
 }
 
 body {
-  background-color: #2596be !important;
+  background-color: #ecb404 !important;
 }
 
 :root {
