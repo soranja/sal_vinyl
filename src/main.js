@@ -13,21 +13,25 @@ document.addEventListener(
   { passive: false },
 );
 
-const recordListContainer = document.getElementById('record-list');
-
-document.addEventListener('DOMContentLoaded', () => {
-  showWelcomeModal();
-
-  if (localStorage.getItem('welcomeModalShown') && !getSnappedRecord()) {
-    showDragInstruction();
-  }
-
+window.addEventListener('load', () => {
   initAudioPlayer();
   requestAnimationFrame(() => {
-    createRecordList(recordListContainer);
-    requestAnimationFrame(() => {
-      updateStaticDots();
-      updatePlayerWrapperOpacity();
-    });
+    const container = document.getElementById('record-list');
+    if (container) {
+      if (container.offsetWidth < 50) {
+        console.warn('Small container width.');
+        setTimeout(() => createRecordList(container), 100);
+      } else {
+        createRecordList(container);
+      }
+    }
+
+    updateStaticDots();
+    updatePlayerWrapperOpacity();
+    showWelcomeModal();
+
+    if (localStorage.getItem('welcomeModalShown') && !getSnappedRecord()) {
+      showDragInstruction();
+    }
   });
 });
