@@ -1,6 +1,6 @@
 import { isSafariWithHEVCAlphaSupport } from './instructions';
 
-const MIN_LOAD_TIME = 400; // in ms
+const MIN_LOAD_TIME = 700;
 const startTime = performance.now();
 
 document.addEventListener('DOMContentLoaded', () => {
