@@ -6,8 +6,8 @@ import { createVinylWrapper } from './vinylWrapper.js';
 export function createRecordList(container) {
   const recordListWidth = container.offsetWidth;
   const isSmallScreen = window.innerWidth <= 1024;
-  const wrapperSize = Math.trunc(recordListWidth * (isSmallScreen ? 0.18 : 0.8));
-  const overlap = Math.trunc(wrapperSize * 0.4);
+  const wrapperSize = Math.round(recordListWidth * (isSmallScreen ? 0.2 : 0.8));
+  const overlap = Math.round(wrapperSize * 0.4);
 
   records.forEach((record, index) => {
     const zLayer = 10 + index;
@@ -17,8 +17,6 @@ export function createRecordList(container) {
     recordWrapper.dataset.index = index + 1;
     recordWrapper.style.zIndex = zLayer;
     recordWrapper.dataset.initZ = `${zLayer}`;
-    recordWrapper.style.width = `${wrapperSize}px`;
-    recordWrapper.style.height = `${wrapperSize}px`;
 
     if (isSmallScreen) {
       recordWrapper.style.marginLeft = index === 0 ? `0px` : `-${overlap}px`;
